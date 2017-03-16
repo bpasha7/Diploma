@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/Content/angular-material.layouts.ie_fixes.css">
     <link rel="stylesheet" href="/Content/angular-material.layouts.min.css">
     <link rel="stylesheet" href="/Content/angular-material.min.css">
+    <link rel="stylesheet" href="/public/Styles/DeviceFormEdit.css">
+
 </head>
 
 <style>
@@ -132,7 +134,9 @@ md-content .ext-content {
 <script src="/Scripts/angular-material/angular-material-mocks.js"></script>
 <script src="/Scripts/angular-material/angular-material.js"></script>
 <script src="/Scripts/angular-material/angular-material.min.js"></script>
-<script src="/Scripts//angular/angular-route.js"></script>
+<script src="/Scripts/angular/angular-route.js"></script>
+<script src="/Scripts/angular/angular-translate.js"></script>
+
 
 
 <script src="/Scripts/app.js"></script>
@@ -172,23 +176,60 @@ md-content .ext-content {
                                     <div layout="row">
                                         <md-input-container>
                                             <label>IP-Адресс</label>
-                                            <input ng-model="DeviceForm.Device.DeviceIP">
+                                            <input ng-model="DeviceForm.Device.DeviceIP" required>
                                         </md-input-container>
 
                                         <md-input-container>
                                             <label>Название</label>
-                                            <input ng-model="DeviceForm.Device.DeviceName">
+                                            <input ng-model="DeviceForm.Device.DeviceName" required>
                                         </md-input-container>
 
                                         <md-input-container >
                                             <label>Тип устройства</label>
-                                                <md-select placeholder="Выберите тип устройства" ng-model="DeviceForm.Device.DeviceType" md-on-open="DeviceForm.loadDeviceTypes()" style="min-width: 200px;">
+                                                <md-select placeholder="Выберите тип устройства" ng-model="DeviceForm.Device.DeviceType" md-on-open="DeviceForm.loadDeviceTypes()" style="min-width: 200px;" ng-change="DeviceForm.TypeChanged()">
                                                     <md-option ng-repeat="DeviceType in DeviceForm.DeviceTypes" ng-value="DeviceType.TypeID">{{DeviceType.TypeName}}</md-option>
                                                 </md-select>
                                         </md-input-container>
                                     </div>
-                                    <md-button class="md-raised md-primary" style="width: 50px; margin: inherit;" ng-click="DeviceForm.CreateDevice()">Добавить</md-button>
-                                </md-card-content>
+                                    <div layout="column" ng-cloak="" class="chipsItemChips" ng-show="DeviceForm.ShowNext">
+                                        <md-content class="md-padding autocomplete" layout="column">
+                                       
+                                           
+                                            <md-contact-chips ng-model="DeviceForm.OIDs"
+                                                              md-OIDs="DeviceForm.querySearch($query)"
+                                                              md-contact-name="name"
+                                                              md-contact-image="image"
+                                                              md-contact-OID="OID"
+                                                              md-require-match="true"
+                                                              md-highlight-flags="i"
+                                                              filter-selected="DeviceForm.filterSelected"
+                                                              placeholder="To">
+                                            </md-contact-chips>
+
+                                            <md-list class="fixedRows">
+                                                <md-subheader class="md-no-sticky">Ресурсы мониторинга</md-subheader>
+                                                <md-list-item class="md-2-line contact-item" ng-repeat="(index, oid) in DeviceForm.allOIDs"
+                                                             ng-if="DeviceForm.OIDs.indexOf(oid) < 0">
+                                                    <img ng-src="{{oid.image}}" class="md-avatar" alt="{{oid.name}}" />
+                                                    <div class="md-list-item-text compact">
+                                                        <h3>{{oid.name}}</h3>
+                                                        <p>{{oid.OID}}</p>
+                                                    </div>
+                                                </md-list-item>
+                                                <md-list-item class="md-2-line contact-item selected" ng-repeat="(index, oid) in DeviceForm.OIDs">
+                                                    <img ng-src="{{oid.image}}" class="md-avatar" alt="{{oid.name}}" />
+                                                    <div class="md-list-item-text compact">
+                                                        <h3>{{oid.name}}</h3>
+                                                        <p>{{oid.OID}}</p>
+                                                    </div>
+                                                </md-list-item>
+                                            </md-list>
+
+                                            <br>
+                                        </md-content>
+                                        </div>
+                                        <md-button class="md-raised md-primary" style="width: 50px; margin: inherit;" ng-click="DeviceForm.CreateDevice()">Добавить</md-button>
+</md-card-content>
                                
                             </md-card>
                             </div>

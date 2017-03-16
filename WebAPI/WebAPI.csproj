@@ -154,6 +154,7 @@
     <Content Include="public\images\refresh.png" />
     <Content Include="public\images\router.png" />
     <Content Include="public\images\search.png" />
+    <Content Include="public\Styles\DeviceFormEdit.css" />
     <Content Include="public\test.html" />
     <Content Include="Scripts\angular-animate\angular-animate.js" />
     <Content Include="Scripts\angular-animate\angular-animate.min.js" />
@@ -165,9 +166,11 @@
     <Content Include="Scripts\angular\angular-mocks.js" />
     <Content Include="Scripts\angular\angular-route.js" />
     <Content Include="Scripts\angular\angular-route.min.js" />
+    <Content Include="Scripts\angular\angular-translate.js" />
     <Content Include="Scripts\angular\angular.js" />
     <Content Include="Scripts\angular\angular.min.js" />
     <Content Include="Scripts\app.js" />
+    <Content Include="Scripts\languages.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -235,6 +238,7 @@
     </Content>
     <Content Include="Scripts\angular\angular.min.js.map" />
     <Content Include="Scripts\angular\angular-route.min.js.map" />
+    <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -264,10 +268,11 @@
           <DevelopmentServerPort>63384</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:63384/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost:63384/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
+          <CustomServerUrl>http://192.168.1.8:63384/</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

@@ -18,9 +18,17 @@ namespace WebAPI.Controllers
         private monitoringEntities2 db = new monitoringEntities2();
 
         // GET: api/OIDs
-        public IQueryable<OID> GetOIDs()
+        public IQueryable<OID> GetOIDs([FromBody] string ForDevices)
         {
             return db.OIDs;
+        }
+
+        [HttpGet]
+        [Route("api/OIDs/Type")]
+        public IQueryable<OID> GetOIDsByGroup([FromUri]string ForDevices)
+        {
+            var DeviceType = Convert.ToInt32(ForDevices);
+            return db.OIDs.Where(x => x.DeviceType == DeviceType);
         }
 
         // GET: api/OIDs/5
