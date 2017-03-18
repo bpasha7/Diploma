@@ -16,7 +16,7 @@ namespace WebAPI.Controllers
 {
     public class DevicesController : ApiController
     {
-        private monitoringEntities2 db = new monitoringEntities2();
+        private monitoringEntities db = new monitoringEntities();
 
         // GET: api/Devices
         public IQueryable<Device> GetDevices()
@@ -88,13 +88,16 @@ namespace WebAPI.Controllers
              }
             //Разбиваем переданные объекты
             Device device = DeviceAndOIDs["Device"].ToObject<Device>();
-            MonitoringEvent monitoringEvent = DeviceAndOIDs["monitoringEvent"].ToObject<MonitoringEvent>();
+            MonitoringEvent[] monitoringEvents = DeviceAndOIDs["monitoringEvents"].ToObject<MonitoringEvent[]>();
             //Добавляем новое устройство в БД
             db.Devices.Add(device);
             await db.SaveChangesAsync();
             //Добавляем OIDs устойства в БД
-            monitoringEvent.DeviceID = device.DeviceID;
-            db.MonitoringEvents.Add(monitoringEvent);
+            foreach (var monitoringEvent in monitoringEvents)
+            {
+                monitoringEvent.DeviceID = device.DeviceID;
+                db.MonitoringEvents.Add(monitoringEvent);
+            }           
             await db.SaveChangesAsync();
 
             return CreatedAtRoute("DefaultApi", new { id = device.DeviceID }, device);

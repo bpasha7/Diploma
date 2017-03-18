@@ -1,4 +1,8 @@
-﻿.chipsItemChips md-content.autocomplete {
+﻿.md-primary .md-ink-ripple{
+    left: 50%;
+}
+
+.chipsItemChips md-content.autocomplete {
     min-height: 250px;
 }
 

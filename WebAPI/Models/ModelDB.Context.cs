@@ -13,10 +13,10 @@ namespace WebAPI.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class monitoringEntities2 : DbContext
+    public partial class monitoringEntities : DbContext
     {
-        public monitoringEntities2()
-            : base("name=monitoringEntities2")
+        public monitoringEntities()
+            : base("name=monitoringEntities")
         {
         }
     
@@ -25,10 +25,12 @@ namespace WebAPI.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<ViewDevice> ViewDevices { get; set; }
         public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<DeviceType> DeviceTypes { get; set; }
+        public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<MonitoringEvent> MonitoringEvents { get; set; }
         public virtual DbSet<OID> OIDs { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<ViewDevice> ViewDevices { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace WebAPI.Controllers
 {
     public class OIDsController : ApiController
     {
-        private monitoringEntities2 db = new monitoringEntities2();
+        private monitoringEntities db = new monitoringEntities();
 
         // GET: api/OIDs
         public IQueryable<OID> GetOIDs([FromBody] string ForDevices)

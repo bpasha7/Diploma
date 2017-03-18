@@ -15,7 +15,7 @@ namespace WebAPI.Controllers
 {
     public class MonitoringEventsController : ApiController
     {
-        private monitoringEntities2 db = new monitoringEntities2();
+        private monitoringEntities db = new monitoringEntities();
 
         // GET: api/MonitoringEvents
         public IQueryable<MonitoringEvent> GetMonitoringEvents()

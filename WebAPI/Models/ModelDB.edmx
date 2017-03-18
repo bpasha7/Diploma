@@ -22,6 +22,14 @@
           <Property Name="TypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TypeName" Type="nvarchar" MaxLength="200" Nullable="false" />
         </EntityType>
+        <EntityType Name="Groups">
+          <Key>
+            <PropertyRef Name="GroupId" />
+          </Key>
+          <Property Name="GroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupName" Type="nchar" MaxLength="100" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+        </EntityType>
         <EntityType Name="MonitoringEvents">
           <Key>
             <PropertyRef Name="ID" />
@@ -40,7 +48,18 @@
           <Property Name="DeviceType" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="OID" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="ValueType" Type="int" />
+          <Property Name="ValueType" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Pass" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="SpecialWord" Type="varchar" MaxLength="50" />
+          <Property Name="EmailAllert" Type="bit" Nullable="false" />
         </EntityType>
         <!--Ошибки, обнаруженные при создании:
 предупреждение 6002: В таблице или представлении "monitoring.dbo.ViewDevice" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
@@ -60,8 +79,10 @@
         <EntityContainer Name="Хранилище monitoringModelContainer">
           <EntitySet Name="Devices" EntityType="Self.Devices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeviceType" EntityType="Self.DeviceType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Groups" EntityType="Self.Groups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MonitoringEvents" EntityType="Self.MonitoringEvents" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OIDs" EntityType="Self.OIDs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ViewDevice" EntityType="Self.ViewDevice" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [ViewDevice].[DeviceID] AS [DeviceID], 
@@ -77,32 +98,12 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="monitoringModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="ViewDevice">
-          <Key>
-            <PropertyRef Name="DeviceID" />
-            <PropertyRef Name="DeviceGroup" />
-            <PropertyRef Name="DeviceIP" />
-          </Key>
-          <Property Name="DeviceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DeviceType" Type="Int32" />
-          <Property Name="DeviceGroup" Type="Int32" Nullable="false" />
-          <Property Name="DeviceIP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="OIDS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityContainer Name="monitoringEntities2" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="ViewDevices" EntityType="Self.ViewDevice" />
-          <EntitySet Name="Devices" EntityType="monitoringModel.Device" />
-          <EntitySet Name="DeviceTypes" EntityType="monitoringModel.DeviceType" />
-          <EntitySet Name="MonitoringEvents" EntityType="monitoringModel.MonitoringEvent" />
-          <EntitySet Name="OIDs" EntityType="monitoringModel.OID" />
-        </EntityContainer>
         <EntityType Name="Device">
           <Key>
             <PropertyRef Name="DeviceID" />
           </Key>
           <Property Name="DeviceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DeviceIP" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceIP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DeviceGroup" Type="Int32" Nullable="false" />
           <Property Name="DeviceType" Type="Int32" />
@@ -112,7 +113,15 @@
             <PropertyRef Name="TypeID" />
           </Key>
           <Property Name="TypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TypeName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="TypeName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Group">
+          <Key>
+            <PropertyRef Name="GroupId" />
+          </Key>
+          <Property Name="GroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupName" Type="String" MaxLength="100" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="UserID" Type="Int32" />
         </EntityType>
         <EntityType Name="MonitoringEvent">
           <Key>
@@ -130,66 +139,120 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="DeviceType" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="OID1" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ValueType" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="OID1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ValueType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Pass" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SpecialWord" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmailAllert" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="monitoringEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Devices" EntityType="Self.Device" />
+          <EntitySet Name="DeviceTypes" EntityType="Self.DeviceType" />
+          <EntitySet Name="Groups" EntityType="Self.Group" />
+          <EntitySet Name="MonitoringEvents" EntityType="Self.MonitoringEvent" />
+          <EntitySet Name="OIDs" EntityType="Self.OID" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="ViewDevices" EntityType="monitoringModel.ViewDevice" />
+        </EntityContainer>
+        <EntityType Name="ViewDevice">
+          <Key>
+            <PropertyRef Name="DeviceID" />
+            <PropertyRef Name="DeviceGroup" />
+            <PropertyRef Name="DeviceIP" />
+          </Key>
+          <Property Name="DeviceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DeviceType" Type="Int32" />
+          <Property Name="DeviceGroup" Type="Int32" Nullable="false" />
+          <Property Name="DeviceIP" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OIDS" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="Хранилище monitoringModelContainer" CdmEntityContainer="monitoringEntities2">
-          <EntitySetMapping Name="ViewDevices">
-            <EntityTypeMapping TypeName="monitoringModel.ViewDevice">
-              <MappingFragment StoreEntitySet="ViewDevice">
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
-                <ScalarProperty Name="DeviceGroup" ColumnName="DeviceGroup" />
-                <ScalarProperty Name="DeviceIP" ColumnName="DeviceIP" />
-                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
-                <ScalarProperty Name="OIDS" ColumnName="OIDS" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
+        <EntityContainerMapping StorageEntityContainer="Хранилище monitoringModelContainer" CdmEntityContainer="monitoringEntities">
           <EntitySetMapping Name="Devices">
             <EntityTypeMapping TypeName="monitoringModel.Device">
               <MappingFragment StoreEntitySet="Devices">
-                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
-                <ScalarProperty Name="DeviceGroup" ColumnName="DeviceGroup" />
-                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
-                <ScalarProperty Name="DeviceIP" ColumnName="DeviceIP" />
                 <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="DeviceIP" ColumnName="DeviceIP" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="DeviceGroup" ColumnName="DeviceGroup" />
+                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DeviceTypes">
             <EntityTypeMapping TypeName="monitoringModel.DeviceType">
               <MappingFragment StoreEntitySet="DeviceType">
-                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
                 <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Groups">
+            <EntityTypeMapping TypeName="monitoringModel.Group">
+              <MappingFragment StoreEntitySet="Groups">
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="MonitoringEvents">
             <EntityTypeMapping TypeName="monitoringModel.MonitoringEvent">
               <MappingFragment StoreEntitySet="MonitoringEvents">
-                <ScalarProperty Name="Notification" ColumnName="Notification" />
-                <ScalarProperty Name="Conditions" ColumnName="Conditions" />
-                <ScalarProperty Name="OID" ColumnName="OID" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="OID" ColumnName="OID" />
+                <ScalarProperty Name="Conditions" ColumnName="Conditions" />
+                <ScalarProperty Name="Notification" ColumnName="Notification" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OIDs">
             <EntityTypeMapping TypeName="monitoringModel.OID">
               <MappingFragment StoreEntitySet="OIDs">
-                <ScalarProperty Name="ValueType" ColumnName="ValueType" />
-                <ScalarProperty Name="OID1" ColumnName="OID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OID1" ColumnName="OID" />
+                <ScalarProperty Name="ValueType" ColumnName="ValueType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="monitoringModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Pass" ColumnName="Pass" />
+                <ScalarProperty Name="SpecialWord" ColumnName="SpecialWord" />
+                <ScalarProperty Name="EmailAllert" ColumnName="EmailAllert" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ViewDevices">
+            <EntityTypeMapping TypeName="monitoringModel.ViewDevice">
+              <MappingFragment StoreEntitySet="ViewDevice">
+                <ScalarProperty Name="OIDS" ColumnName="OIDS" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="DeviceIP" ColumnName="DeviceIP" />
+                <ScalarProperty Name="DeviceGroup" ColumnName="DeviceGroup" />
+                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

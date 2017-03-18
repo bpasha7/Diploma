@@ -15,7 +15,7 @@ namespace WebAPI.Controllers
 {
     public class DeviceTypesController : ApiController
     {
-        private monitoringEntities2 db = new monitoringEntities2();
+        private monitoringEntities db = new monitoringEntities();
 
         // GET: api/DeviceTypes
         public IQueryable<DeviceType> GetDeviceTypes()

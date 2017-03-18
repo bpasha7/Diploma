@@ -12,12 +12,10 @@ namespace WebAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class OID
+    public partial class Group
     {
-        public int ID { get; set; }
-        public int DeviceType { get; set; }
-        public string Name { get; set; }
-        public string OID1 { get; set; }
-        public string ValueType { get; set; }
+        public int GroupId { get; set; }
+        public string GroupName { get; set; }
+        public Nullable<int> UserID { get; set; }
     }
 }

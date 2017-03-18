@@ -1,0 +1,9 @@
+﻿<md-content class="md-padding">
+    <div class="map" ng-controller="MonitorCtrl">
+        <div class="device_on" ng-repeat="x in Devices">
+            <img class="refresh" src="public/images/refresh.png" deviceId="" />
+            <img src="/public/images/pc.png" />
+            <label>{{ x.DeviceIP }}</label>
+        </div>
+    </div>
+</md-content>
