@@ -1,4 +1,6 @@
-﻿angular.module('MyApp', ['ngMaterial', 'ngRoute']);
+﻿angular.module('MyApp', ['ngMaterial', 'ngMessages', 'material.svgAssetsCache', 'ngRoute', 'pascalprecht.translate']);
+
+
 angular.module('MyApp').controller('AppCtrl', AppCtrl);
 
 //============
@@ -8,13 +10,45 @@ function router ($routeProvider) {
     .when('/monitor', {
         templateUrl: 'monitor.html',
         redirectTo: '/monitor',
-        controller: 'MonitorCtrl',
-        controllerAs: 'Monitor'
+        controller: 'MonitorCtrl'//,
+        //controllerAs: 'Monitor'
     })
+     .when('/device/:id', {//'/device/:id'
+         templateUrl: 'test.html',
+         //redirectTo: '/device:id',
+               controller: 'DeviceController',
+               controllerAs: 'Device'
+           })
     .otherwise({
         redirectTo: ''
     });
 };
+
+angular.module('MyApp').controller('MonitoringMenuController', function ($location, $translate) {
+    var self = this;
+    self.selectedMode = 'md-fling';
+    self.changeLanguage = function (langKey) {
+        $translate.use(langKey);
+    };
+    self.announceClick = function (index) {
+        $mdDialog.show(
+          $mdDialog.alert()
+            .title('You clicked!')
+            .textContent('You clicked the menu item at index ' + index)
+            .ok('Nice')
+        );
+    };
+    self.goMenu = function() {
+        $location.url('http://localhost:63384/#/monitor');
+        };
+});
+
+angular.module('MyApp').controller('DeviceController', function ($scope, $routeParams) {
+    var self = this;
+    self.temp = $routeParams.id;
+
+});
+
 
 angular
   .module('MyApp')
@@ -32,12 +66,13 @@ angular
                 data: { Device: Device, monitoringEvents: monitoringEvents },
                 dataType: "json"
             })
-                .then(function (data) {
-
+                .then(function (data, status, headers, config) {
+                    return data.data;
                 })
                 .catch(function (status) {
                     console.log('ERROR: DeviceFormService.CreateDevice, Exception type: ' + status.data.ExceptionType + ', Message:' + status.data.Message);
                 });
+            
         }
         //поправить имена функций
     this.GetOIDs = function (DeviceType) {
@@ -71,6 +106,9 @@ class MonitoringEvent {
     }
 }
 
+
+
+///--
 angular.module('MyApp').controller('DeviceFormController', function ($http, $mdDialog, $timeout, DeviceFormService) {
 
     var self = this;
@@ -222,7 +260,7 @@ angular.module('MyApp').controller('DeviceFormController', function ($http, $mdD
         for (var i = 0; i < self.oids.length; i++) {                                                                                      
             monitoringEvents.push(new MonitoringEvent(self.oids[i].Id, self.oids[i].Conditions, self.oids[i].Notification));
         }
-        //var rew =
+        var rew =
         DeviceFormService.CreateDevice(self.Device, monitoringEvents);
             //self.showAlert(ev);
     }

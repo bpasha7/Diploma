@@ -56,11 +56,14 @@ namespace WebAPI.Controllers
                 string host = "127.0.0.1"; //Vals[0];
                 string community = "public";//Vals[1];
                 SimpleSnmp snmp = new SimpleSnmp(host, community);
+                Pdu pdu = new Pdu();
+                //pdu.Type = SnmpConstants.GETNEXT; // type GETNEXT
+                pdu.VbList.Add(".1.3.6.1.2.1.25.1.1.0");
                 if (!snmp.Valid)
                 {
                     return "SNMP agent host name/ip address is invalid.";
                 }
-                Dictionary<Oid, AsnType> result = snmp.Walk(SnmpVersion.Ver1, "1.3.6.1.2.1.25.6.3.1.2");
+               Dictionary<Oid, AsnType> result = snmp.Get(SnmpVersion.Ver1, pdu);
                 if (result == null)
                 {
                     return "No results received.";

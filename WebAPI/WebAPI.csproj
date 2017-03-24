@@ -156,7 +156,10 @@
     <Content Include="public\images\router.png" />
     <Content Include="public\images\search.png" />
     <Content Include="public\Styles\DeviceFormEdit.css" />
-    <Content Include="public\test.html" />
+    <Content Include="public\Styles\Menu.css" />
+    <Content Include="Scripts\angular-messages.js" />
+    <Content Include="Scripts\angular-messages.min.js" />
+    <Content Include="test.html" />
     <Content Include="Scripts\angular-animate\angular-animate.js" />
     <Content Include="Scripts\angular-animate\angular-animate.min.js" />
     <Content Include="Scripts\angular-aria\angular-aria.js" />
@@ -172,7 +175,6 @@
     <Content Include="Scripts\angular\angular.min.js" />
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\languages.js" />
-    <Content Include="Scripts\ngMask.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -191,6 +193,7 @@
     <Compile Include="Models\Device.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DeviceMonitor.cs" />
     <Compile Include="Models\DeviceType.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
@@ -246,6 +249,7 @@
     <Content Include="Models\ModelDB.edmx.diagram">
       <DependentUpon>ModelDB.edmx</DependentUpon>
     </Content>
+    <Content Include="Scripts\angular-messages.min.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

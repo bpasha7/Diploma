@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebAPI.Models;
+using Newtonsoft.Json.Linq;
 
 namespace WebAPI.Controllers
 {
@@ -23,11 +24,29 @@ namespace WebAPI.Controllers
             return db.ViewDevices;
         }
 
+        [HttpGet]
+        [Route("api/Device/snmp")]
+        public string GetMonitoringData([FromUri]int id)
+        {
+            ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
+            // var r = JObject.Parse(viewDevice.OIDS).ToObject<DeviceMonitor[]>();
+            string oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
+            MonitoringData[] monitoringData = Newtonsoft.Json.JsonConvert.DeserializeObject<MonitoringData[]>(oidsArray);
+            DeviceMonitor deviceMonitor = new DeviceMonitor();
+            return deviceMonitor.Run(viewDevice, monitoringData);
+
+
+        } 
+
         // GET: api/ViewDevices/5
         [ResponseType(typeof(ViewDevice))]
         public async Task<IHttpActionResult> GetViewDevice(int id)
         {
-            ViewDevice viewDevice = await db.ViewDevices.FindAsync(id);
+            ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
+           // var r = JObject.Parse(viewDevice.OIDS).ToObject<DeviceMonitor[]>();
+            string oids = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
+            var t = Newtonsoft.Json.JsonConvert.DeserializeObject<DeviceMonitor[]>(oids);
+            //ViewDevice viewDevice = await db.ViewDevices.FindAsync(id);
             if (viewDevice == null)
             {
                 return NotFound();

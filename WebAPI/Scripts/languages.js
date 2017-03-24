@@ -1,30 +1,41 @@
 ﻿var translationsEN = {
-    HEADLINE: 'What an awesome module!',
-    PARAGRAPH: 'Srsly!',
-    BUTTON_LANG_DE: 'German',
-    BUTTON_LANG_EN: 'English'
+    HEADLINE: 'Monitoring system',
+    MENU_MONITOR: 'Monitor',
+    MENU_DEVICES: 'Devices',
+    MENU_SETTINGS: 'Settings',
+	DEVICE_FORM_HEADER: 'New device form',
+	DEVICE_FORM_FILLINGDATA: 'Fill in',
+	DEVICE_FORM_TYPEDEVICES: 'Choose device type',
+	DEVICE_FORM_IPADDRESS: 'IP-address',
+	DEVICE_FORM_DEVICENAME: 'Name',
+	DEVICE_FORM_AVAILABLEPARAMS: 'Available parameters'
 };
 
 var translationsRU = {
-    HEADLINE: 'Was für ein großartiges Modul!',
-    PARAGRAPH: 'Ernsthaft!',
-    BUTTON_LANG_RU: 'Deutsch',
-    BUTTON_LANG_EN: 'Englisch'
+    HEADLINE: 'Система мониторинга',
+    MENU_MONITOR: 'Монитор',
+    MENU_DEVICES: 'Устройства',
+    MENU_SETTINGS: 'Настрйоки',
+	DEVICE_FORM_HEADER: 'Новое устрйоство',
+	DEVICE_FORM_FILLINGDATA: 'Заполните данные',
+	DEVICE_FORM_TYPEDEVICES: 'Выберите тип устройства',
+	DEVICE_FORM_IPADDRESS: 'IP-Адресс',
+	DEVICE_FORM_DEVICENAME: 'Название',
+	DEVICE_FORM_AVAILABLEPARAMS: 'Доступных параметров'
 };
 
-var app = angular.module('myApp', ['pascalprecht.translate']);
+//var app = angular.module('MyApp', ['pascalprecht.translate']);
 
-app.config(['$translateProvider', function ($translateProvider) {
+angular.module('MyApp').config(['$translateProvider', function ($translateProvider) {
     // add translation tables
     $translateProvider.translations('en', translationsEN);
-    $translateProvider.translations('de', translationsDE);
-    $translateProvider.preferredLanguage('en');
-    $translateProvider.fallbackLanguage('en');
+    $translateProvider.translations('ru', translationsRU);
+    $translateProvider.preferredLanguage('ru');
+    //$translateProvider.fallbackLanguage('en');
 }]);
-
-app.controller('Ctrl', ['$translate', '$scope', function ($translate, $scope) {
+/*angular.module('MyApp').controller('LanguagesController', function ($translate, $scope) {
 
     $scope.changeLanguage = function (langKey) {
         $translate.use(langKey);
     };
-}]);
+});*/

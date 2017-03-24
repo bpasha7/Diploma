@@ -1,0 +1,13 @@
+﻿.md-fab:hover, .fabSpeedDialdemoBasicUsage .md-fab.md-focused {
+  background-color: #d8d8d8 !important; }
+
+ p.note {
+  font-size: 1.2rem; }
+
+.lock-size {
+  min-width: 300px;
+  min-height: 300px;
+  width: 300px;
+  height: 300px;
+  margin-left: auto;
+  margin-right: auto; }
