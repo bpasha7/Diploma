@@ -1,0 +1,32 @@
+﻿<!--<md-content class="md-no-momentum">-->
+<md-content class="md-padding">
+    <div class="md-padding selectdemoBasicUsage" ng-cloak="" layout="column" style="width: 40%; max-width: 450px; min-width: 300px; margin: auto;">
+        <md-card>
+            <md-card-title style="text-align: center;">
+                <md-card-title-text>
+                    <span class="md-headline">{{'LOGIN_HEADER' | translate }}</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content ng-controller="LoginController as Login">
+                <md-input-container class="md-icon-float md-block" style="margin: auto; width: 70%;">
+                    <md-icon md-svg-src="public/images/user.svg" class="name"></md-icon>
+                    <input ng-model="Login.email" type="text" placeholder="{{'LOGIN_EMAIL' | translate }}">
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block" style="margin: auto; width: 70%;">
+                    <md-icon md-svg-src="public/images/key.svg"></md-icon>
+                    <input ng-model="Login.password" type="password" placeholder="{{'LOGIN_PASSWORD' | translate }}">
+                </md-input-container>
+                <div layout="row">
+                    <md-button md-no-ink class="md-raised md-primary" ng-click="Login.GetUserID($event)" style="margin: auto;">{{'LOGIN_HEADER' | translate }}</md-button>
+                    <md-button md-no-ink class="md-raised md-primary" ng-click="" style="background:rgb(40, 147, 51); margin: auto;">{{'LOGIN_SIGNUP' | translate }}</md-button>
+                </div>
+            </md-card-content>
+            
+        </md-card>
+    </div>
+    </md-content>
+  
+   
+   
+    <!--</md-content>-->

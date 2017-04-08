@@ -30,7 +30,7 @@ namespace WebAPI.Models
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<MonitoringEvent> MonitoringEvents { get; set; }
         public virtual DbSet<OID> OIDs { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<ViewDevice> ViewDevices { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

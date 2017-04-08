@@ -1,28 +1,119 @@
-﻿angular.module('MyApp', ['ngMaterial', 'ngMessages', 'material.svgAssetsCache', 'ngRoute', 'pascalprecht.translate']);
+﻿angular.module('MyApp', ['ngMaterial', 'ngMessages', 'material.svgAssetsCache', 'ngRoute', 'pascalprecht.translate', 'ngCookies', 'chart.js']);
 
 
 angular.module('MyApp').controller('AppCtrl', AppCtrl);
 
 //============
 // Routing configuration.
-function router ($routeProvider) {
+function router($routeProvider) {
     $routeProvider
+    .when('/login', {
+        templateUrl: 'login.html',
+        controller: 'LoginController'//,
+       // controllerAs: 'Login'
+    })
     .when('/monitor', {
-        templateUrl: 'monitor.html',
-        redirectTo: '/monitor',
-        controller: 'MonitorCtrl'//,
+        templateUrl: 'main.html',
+        redirectTo: '/monitor'//,
+        //controller: 'MonitorCtrl'//,
         //controllerAs: 'Monitor'
     })
      .when('/device/:id', {//'/device/:id'
-         templateUrl: 'test.html',
+         templateUrl: 'device.html',
          //redirectTo: '/device:id',
-               controller: 'DeviceController',
-               controllerAs: 'Device'
-           })
+         controller: 'DeviceController',
+         controllerAs: 'Device'
+     })
     .otherwise({
         redirectTo: ''
     });
 };
+
+angular
+  .module('MyApp')
+  .config(router);
+
+angular.module('MyApp').controller('UserMenuController', function ($location) {
+    var self = this;
+    self.email = "bpasha@mail.ru";
+    self.password = "12345";
+    self.goLogin = function () {
+        $location.url('/login');
+    };
+
+});
+
+
+angular
+    .module('MyApp')
+    .service('LoginService', function ($http) {
+        //поправить имена функций
+        this.GetUserID = function (email, password) {
+            return $http.get("api/user/login?email=" + email+"&password="+password)
+        .then(getUserIDComplete)
+        .catch(getUserIDFailed);
+
+            function getUserIDComplete(data, status, headers, config) {
+                return data.data;
+            }
+
+            function getUserIDFailed(e) {
+                var newMessage = 'XHR Failed for getUserID'
+                if (e.data && e.data.description) {
+                    newMessage = newMessage + '\n' + e.data.description;
+                }
+                e.data.description = newMessage;
+                logger.error(newMessage);
+                return $q.reject(e);
+            }
+        }
+    });
+
+
+angular.module('MyApp').controller('LoginController', function ( $cookies, $cookieStore, $filter, $mdDialog, LoginService, $location) {
+    var self = this;
+    self.email="bpasha@mail.ru";
+    self.password="12345";
+    self.GetUserID = function (ev) {
+        LoginService.GetUserID(self.email, self.password)
+            .then(function (result) {
+                if (result != 0) {
+                    $cookies.put('userId', result);
+                    self.showAlert(ev, $filter('translate')('HEADLINE'), $filter('translate')('LOGIN_SIGNUP_OK'));
+                            $location.url('/monitor');
+                }
+                else
+                {
+                    self.showAlert(ev, $filter('translate')('HEADLINE'), $filter('translate')('LOGIN_SIGNUP_FAIL'));
+                    //return false;
+                }
+            });
+    };
+    self.showAlert = function (ev, title, text) {
+        // Appending dialog to document.body to cover sidenav in docs app
+        // Modal dialogs should fully cover application
+        // to prevent interaction outside of dialog
+        $mdDialog.show(
+          $mdDialog.alert()
+            .parent(angular.element(document.querySelector('#popupContainer')))
+            .clickOutsideToClose(true)
+            .title(title)
+            .textContent(text)
+            .ariaLabel('Alert Dialog')
+            .ok('OK')
+            .targetEvent(ev)
+        );
+        //return true;
+       /* .then(function (result) {
+                if(result)
+                    $location.url('/monitor');
+            });*/
+    };
+   
+});
+
+
+
 
 angular.module('MyApp').controller('MonitoringMenuController', function ($location, $translate) {
     var self = this;
@@ -38,21 +129,123 @@ angular.module('MyApp').controller('MonitoringMenuController', function ($locati
             .ok('Nice')
         );
     };
-    self.goMenu = function() {
-        $location.url('http://localhost:63384/#/monitor');
-        };
-});
-
-angular.module('MyApp').controller('DeviceController', function ($scope, $routeParams) {
-    var self = this;
-    self.temp = $routeParams.id;
-
+    self.goMenu = function () {
+        $location.url('/monitor');
+    };
 });
 
 
 angular
-  .module('MyApp')
-  .config(router);
+    .module('MyApp')
+    .service('DeviceService', function ($http) {
+        //поправить имена функций
+        this.GetDeviceSNMPData = function (id) {
+            return $http.get("/api/Device/snmp?id=" +id)
+        .then(getDeviceComplete)
+        .catch(getDeviceFailed);
+
+            function getDeviceComplete(data, status, headers, config) {
+                return data.data;
+            }
+
+            function getDeviceFailed(e) {
+                var newMessage = 'XHR Failed for GetDeviceSNMPData'
+                if (e.data && e.data.description) {
+                    newMessage = newMessage + '\n' + e.data.description;
+                }
+                e.data.description = newMessage;
+                logger.error(newMessage);
+                return $q.reject(e);
+            }
+        }
+    });
+
+class MonitoringChart {
+    constructor() {
+        this.labels = [];      
+        //this.series = null;
+        this.data = [[]];
+        this.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
+        this.options = {
+            scales: {
+                yAxes: [
+                  {
+                      id: 'y-axis-1',
+                      type: 'linear',
+                      display: true,
+                      position: 'left'
+                  }
+                ]
+            }
+        };
+    }
+    UpdateChart(MonitoingResult, time) {
+        this.series = [MonitoingResult.Name];
+        this.name = MonitoingResult.Name + ' ' + MonitoingResult.Measure;
+        if (this.data[0].length == 10) {
+            this.data[0].shift();
+            this.labels.shift();
+        }
+        else {
+            this.labels.push(time);
+            this.data[0].push(MonitoingResult.Value);
+        }
+    }
+}
+
+angular.module('MyApp').controller('DeviceController', function ($scope, $routeParams, $interval, DeviceService) {
+    var self = this;
+    self.id = $routeParams.id;
+    self.DeviceSNMP;
+    self.Period = 60;
+    self.MonitoingCharts = [];
+    self.MonitoingProperties = [];
+    var stop;
+    self.startMonitoring = function () {
+        if (angular.isDefined(stop)) return;
+
+        stop = $interval(function () {
+            self.Refresh();
+        }, (self.Period * 1000));
+    };
+    self.Refresh = function () {
+        DeviceService.GetDeviceSNMPData(self.id).then(function (result) {
+            self.DeviceSNMP = angular.fromJson(result);
+        })
+        .then(function () {
+            self.UpdateMonitoingCharts();
+            self.UpdateMonitoringProperies();
+        });
+    }
+    self.UpdateMonitoringProperies = function () {
+        self.MonitoingProperties = self.DeviceSNMP.monitoringProperties;
+    }
+    self.UpdateMonitoingCharts = function () {
+        var data = self.DeviceSNMP.monitoringResults;
+        var time = moment(Date.now()).format('LT');
+        if (self.MonitoingCharts.length != data.length)
+            self.CreateChart(data, time);
+        else
+            self.UpdateChart(data, time);
+    }
+    self.CreateChart = function (data, time) {
+        for (var i = 0; i < data.length; i++) {
+            self.MonitoingCharts.push(new MonitoringChart());
+            self.MonitoingCharts[i].UpdateChart(data[i], time);
+        }
+    }
+    self.UpdateChart = function (data, time) {
+        for (var i = 0; i < data.length; i++) {
+            self.MonitoingCharts[i].UpdateChart(data[i], time);
+        }
+    }
+   /* self.onClick = function (points, evt) {
+        console.log(points, evt);
+    };*/
+
+});
+
+
 
 angular
     .module('MyApp')
@@ -66,34 +259,35 @@ angular
                 data: { Device: Device, monitoringEvents: monitoringEvents },
                 dataType: "json"
             })
-                .then(function (data, status, headers, config) {
-                    return data.data;
+                .then(function () {
+                    return true;
                 })
                 .catch(function (status) {
                     console.log('ERROR: DeviceFormService.CreateDevice, Exception type: ' + status.data.ExceptionType + ', Message:' + status.data.Message);
+                    return false;
                 });
-            
+
         }
         //поправить имена функций
-    this.GetOIDs = function (DeviceType) {
-        return $http.get("api/OIDs/Type?ForDevices=" + DeviceType)
-    .then(getCustomerComplete)
-    .catch(getCustomerFailed);
+        this.GetOIDs = function (DeviceType) {
+            return $http.get("api/OIDs/Type?ForDevices=" + DeviceType)
+        .then(getCustomerComplete)
+        .catch(getCustomerFailed);
 
-        function getCustomerComplete(data, status, headers, config) {
-            return data.data;
-        }
-
-        function getCustomerFailed(e) {
-            var newMessage = 'XHR Failed for getCustomer'
-            if (e.data && e.data.description) {
-                newMessage = newMessage + '\n' + e.data.description;
+            function getCustomerComplete(data, status, headers, config) {
+                return data.data;
             }
-            e.data.description = newMessage;
-            logger.error(newMessage);
-            return $q.reject(e);
+
+            function getCustomerFailed(e) {
+                var newMessage = 'XHR Failed for getCustomer'
+                if (e.data && e.data.description) {
+                    newMessage = newMessage + '\n' + e.data.description;
+                }
+                e.data.description = newMessage;
+                logger.error(newMessage);
+                return $q.reject(e);
+            }
         }
-    }
     });
 
 class MonitoringEvent {
@@ -136,7 +330,7 @@ angular.module('MyApp').controller('DeviceFormController', function ($http, $mdD
     /**
      * Search for contacts; use a random delay to simulate a remote call
      */
-    function querySearch (criteria) {
+    function querySearch(criteria) {
         return criteria ? self.allOIDs.filter(createFilterFor(criteria)) : [];
     }
 
@@ -164,15 +358,15 @@ angular.module('MyApp').controller('DeviceFormController', function ($http, $mdD
      * Also debounce the queries; since the md-contact-chips does not support this
      */
     function delayedQuerySearch(criteria) {
-        if ( !pendingSearch || !debounceSearch() )  {
+        if (!pendingSearch || !debounceSearch()) {
             cancelSearch();
 
-            return pendingSearch = $q(function(resolve, reject) {
+            return pendingSearch = $q(function (resolve, reject) {
                 // Simulate async search... (after debouncing)
                 cancelSearch = reject;
-                $timeout(function() {
+                $timeout(function () {
 
-                    resolve( self.querySearch(criteria) );
+                    resolve(self.querySearch(criteria));
 
                     refreshDebounce();
                 }, Math.random() * 500, true)
@@ -197,7 +391,7 @@ angular.module('MyApp').controller('DeviceFormController', function ($http, $mdD
 
         return ((now - lastSearch) < 300);
     }
-  
+
     //Создание функции фильтра для строки запроса
     function createFilterFor(query) {
         var lowercaseQuery = angular.lowercase(query);
@@ -209,21 +403,22 @@ angular.module('MyApp').controller('DeviceFormController', function ($http, $mdD
     }
 
     //Загрузка списка OID для группы устрйоств, выбранной из списка
-    function loadOIDs() { 
+    function loadOIDs() {
         if (self.Device.DeviceType != null) {
             DeviceFormService.GetOIDs(self.Device.DeviceType).then(function (result) {
                 self.allOIDs =
                 result.map(function (c, index) {
                     var oid = {
                         Id: c.ID,
-                        name: c.Name,
+                        name: c.Name + GetCommentaryNotNull(c.Commentary),
                         email: c.OID1,
+                        commentary: c.Commentary,
                         Conditions: "",
                         Type: c.ValueType,
                         Notification: false,
                         image: '/public/images/eye.png'
                     };
-                    oid._lowername = oid.name.toLowerCase() + ' ' + oid.email.toLowerCase();
+                    oid._lowername = oid.name.toLowerCase() + ' ' + oid.email.toLowerCase() + ' ' + oid.commentary.toLowerCase();
                     return oid;
                 });
                 self.oids = [self.allOIDs[0]];
@@ -235,7 +430,13 @@ angular.module('MyApp').controller('DeviceFormController', function ($http, $mdD
             return;
         }
     }
-   
+
+    function GetCommentaryNotNull(Commentary) {
+        if (Commentary != null && Commentary.trim() != "")
+            return ' [' + Commentary + ']';
+        else
+            return '';
+    }
     //Загрузка типов устройств из БД
     self.loadDeviceTypes = function () {
         if (self.DeviceTypes != null)
@@ -251,21 +452,25 @@ angular.module('MyApp').controller('DeviceFormController', function ($http, $mdD
     };
     self.TypeChanged = function () {
         if (self.DeviceTypes != null) {
-            loadOIDs();  
-        }                  
+            loadOIDs();
+        }
     };
     //Сохраниние данных в БД
     self.CreateDevice = function (ev) {
         var monitoringEvents = [];
-        for (var i = 0; i < self.oids.length; i++) {                                                                                      
+        for (var i = 0; i < self.oids.length; i++) {
             monitoringEvents.push(new MonitoringEvent(self.oids[i].Id, self.oids[i].Conditions, self.oids[i].Notification));
         }
-        var rew =
-        DeviceFormService.CreateDevice(self.Device, monitoringEvents);
-            //self.showAlert(ev);
+        DeviceFormService.CreateDevice(self.Device, monitoringEvents)
+        .then(function (result) {
+            if (result)
+                self.showAlert(ev, $filter('translate')('HEADLINE'), $filter('translate')('DEVICE_FORM_ALLER_TEXT_OK'));
+            else
+                self.showAlert(ev, $filter('translate')('HEADLINE'), $filter('translate')('DEVICE_FORM_ALLER_TEXT_FAIL'));
+        })
     }
 
-    self.showAlert = function (ev) {
+    self.showAlert = function (ev, titel, text) {
         // Appending dialog to document.body to cover sidenav in docs app
         // Modal dialogs should fully cover application
         // to prevent interaction outside of dialog
@@ -273,10 +478,10 @@ angular.module('MyApp').controller('DeviceFormController', function ($http, $mdD
           $mdDialog.alert()
             .parent(angular.element(document.querySelector('#popupContainer')))
             .clickOutsideToClose(true)
-            .title('This is an alert title')
-            .textContent('You can specify some description text in here.')
+            .title(titel)
+            .textContent(text)
             .ariaLabel('Alert Dialog Demo')
-            .ok('Got it!')
+            .ok('ОК')
             .targetEvent(ev)
         );
     };

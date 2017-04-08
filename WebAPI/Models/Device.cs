@@ -19,5 +19,6 @@ namespace WebAPI.Models
         public string DeviceName { get; set; }
         public int DeviceGroup { get; set; }
         public Nullable<int> DeviceType { get; set; }
+        public string DeviceCommunity { get; set; }
     }
 }

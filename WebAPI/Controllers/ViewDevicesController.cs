@@ -32,8 +32,9 @@ namespace WebAPI.Controllers
             // var r = JObject.Parse(viewDevice.OIDS).ToObject<DeviceMonitor[]>();
             string oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
             MonitoringData[] monitoringData = Newtonsoft.Json.JsonConvert.DeserializeObject<MonitoringData[]>(oidsArray);
-            DeviceMonitor deviceMonitor = new DeviceMonitor();
-            return deviceMonitor.Run(viewDevice, monitoringData);
+            DeviceMonitor deviceMonitor = new DeviceMonitor(viewDevice);
+            deviceMonitor.Run(monitoringData);
+            return deviceMonitor.ToJSON();
 
 
         } 

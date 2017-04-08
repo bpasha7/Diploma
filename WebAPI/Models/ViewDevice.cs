@@ -20,5 +20,7 @@ namespace WebAPI.Models
         public string DeviceIP { get; set; }
         public string DeviceName { get; set; }
         public string OIDS { get; set; }
+        public string TypeName { get; set; }
+        public string DeviceCommunity { get; set; }
     }
 }

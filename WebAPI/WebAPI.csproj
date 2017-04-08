@@ -132,6 +132,8 @@
     <Content Include="Content\angular-material.min.css" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
+    <Content Include="login.html" />
+    <Content Include="main.html" />
     <Content Include="Models\ModelDB.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ModelDB.edmx</DependentUpon>
@@ -156,10 +158,21 @@
     <Content Include="public\images\router.png" />
     <Content Include="public\images\search.png" />
     <Content Include="public\Styles\DeviceFormEdit.css" />
+    <Content Include="public\Styles\login.css" />
     <Content Include="public\Styles\Menu.css" />
+    <Content Include="Scripts\angular-chart.js" />
+    <Content Include="Scripts\angular-chart.min.js" />
+    <Content Include="Scripts\angular-cookies.js" />
+    <Content Include="Scripts\angular-cookies.min.js" />
     <Content Include="Scripts\angular-messages.js" />
     <Content Include="Scripts\angular-messages.min.js" />
-    <Content Include="test.html" />
+    <Content Include="Scripts\Chart.js" />
+    <Content Include="Scripts\Chart.min.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
+    <Content Include="device.html" />
     <Content Include="Scripts\angular-animate\angular-animate.js" />
     <Content Include="Scripts\angular-animate\angular-animate.min.js" />
     <Content Include="Scripts\angular-aria\angular-aria.js" />
@@ -186,6 +199,7 @@
     <Compile Include="Controllers\MonitorController.cs" />
     <Compile Include="Controllers\MonitoringEventsController.cs" />
     <Compile Include="Controllers\OIDsController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\ViewDevicesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -222,6 +236,7 @@
     <Compile Include="Models\OID.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Parser.cs" />
     <Compile Include="Models\User.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
@@ -250,6 +265,8 @@
       <DependentUpon>ModelDB.edmx</DependentUpon>
     </Content>
     <Content Include="Scripts\angular-messages.min.js.map" />
+    <Content Include="Scripts\angular-cookies.min.js.map" />
+    <Content Include="Scripts\angular-chart.min.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,6 +1,8 @@
 ﻿<!DOCTYPE html>
-<html>
+<html ng-app="MyApp">
+
 <head>
+    <link rel="shortcut icon" href="/public/images/eye.png" />
     <link rel="stylesheet" href="/Content/angular-material.css">
     <link rel="stylesheet" href="/Content/angular-material.layout-attributes.css">
     <link rel="stylesheet" href="/Content/angular-material.layout-attributes.min.css">
@@ -10,120 +12,19 @@
     <link rel="stylesheet" href="/Content/angular-material.min.css">
     <link rel="stylesheet" href="/public/Styles/DeviceFormEdit.css">
     <link rel="stylesheet" href="/public/Styles/Menu.css">
-
+<title>{{'HEADLINE' | translate }}</title>
 
 </head>
 
 <style>
-    md-content .ext-content {
-      padding: 50px;
-      margin: 20px;
-      background-color: #FFF2E0;
-    }
 
     .map{
         width: 96%;
         height: 40% auto;
-        background: #c0d4d4;
+        background: #edeef0;
         position: relative;
         margin: 2%;
         /*display: none;*/
-    }
-    .device_on{
-        display: inline-block;
-        margin: 5px;
-        width: 100px;
-        height: 90px;
-        border-radius: 7px;
-        background-color:#00ff00;
-    }
-    .device_off img{
-        position: relative;
-        right: 10px;
-        width: 70%;
-    }
-    .device_refresh img{
-        position: relative;
-        right: 10px;
-        width: 70%;
-        visibility: hidden;
-    }
-    .device_on img{
-        position: relative;
-        right: 10px;
-        width: 70%;
-    }
-    .device_on .refresh{
-        position: relative;
-        width: 20%;
-        top: -50px;
-        left: 2px;
-        cursor: pointer;
-    }
-    .device_off .refresh{
-        position: relative;
-        width: 20%;
-        top: -50px;
-        left: 2px;
-        cursor: pointer;
-    }
-    .device_refresh .refresh{
-        position: relative;
-        width: 20%;
-        top: -50px;
-        left: 2px;
-        cursor: pointer;
-    }
-    .device_off label{
-        position: relative;
-        display: block;
-        text-align: center;
-        color: white;
-    }
-    .device_refresh label{
-        position: relative;
-        display: block;
-        text-align: center;
-        color: white;
-    }
-    .device_on label{
-        position: relative;
-        display: block;
-        text-align: center;
-        color: white;
-    }
-    .device_on .tooltiptext {
-        visibility: hidden;
-        position: absolute;
-        width: auto;
-        background-color: #555;
-        color: #fff;
-        padding: 5px;
-        border-radius: 6px;
-        z-index: 1;
-        opacity: 0;
-        transition: opacity 1s;
-    }
-     .tooltiptext {
-        visibility: hidden;
-        position: absolute;
-        width: auto;
-        background-color: #555;
-        color: #fff;
-        padding: 5px;
-        border-radius: 6px;
-        z-index: 1;
-        opacity: 0;
-        transition: opacity 1s;
-        margin: 87px;
-    }
-    .device_off:hover .tooltiptext {
-        visibility: visible;
-        opacity: 0.90;
-    }
-    .device_on:hover .tooltiptext {
-        visibility: visible;
-        opacity: 0.90;
     }
 </style>
 <!-- Angular Material requires Angular.js Libraries -->
@@ -142,14 +43,23 @@
 <script src="/Scripts/angular-messages.min.js"></script>
 <script src="/Scripts/svg-assets-cache.js"></script>
 
+<!--<script src="/Script/Chart.js"></script>-->
+<script src="/Scripts/moment.js"></script>
+<script src="/Scripts/Chart.js"></script>
+<script src="/Scripts/angular-chart.min.js"></script>
+
+
+<script src="/Scripts/angular-cookies.js"></script>
+
 <script src="/Scripts/app.js"></script>
+
 <script src="/Scripts/languages.js"></script>
-<!--<script src="/Scripts/ngMask.min.js"></script>-->
 
 
 
 
-<body ng-app="MyApp">
+
+<body>
 
     <md-toolbar class="md-hue-2" ng-controller="MonitoringMenuController as MonitoringMenu">
         <div class="md-toolbar-tools">
@@ -159,13 +69,19 @@
 
             <h2 flex="" md-truncate="" >{{'HEADLINE' | translate }}</h2>
 
-            <md-menu md-offset="0 -7">
+            <md-menu md-offset="0 -7" ng-controller="UserMenuController as UserMenu">
                 <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdMenu.open($event)">
                     <md-icon md-menu-origin="" md-svg-icon="public/images/user.svg"></md-icon>
                 </md-button>
                 <md-menu-content width="3">
-                    <md-menu-item ng-repeat="item in [1, 2, 3]">
-                        <md-button ng-click="MonitoringMenu.announceClick($index)"> <span md-menu-align-target="">Option</span> {{item}} </md-button>
+                    <md-menu-item ng-click="UserMenu.goLogin()">
+                        <md-button> <span md-menu-align-target="" >Войти</span></md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button> <span md-menu-align-target="">Настройки</span></md-button>
+                    </md-menu-item>
+                    <md-menu-item>
+                        <md-button> <span md-menu-align-target="">Выйти</span></md-button>
                     </md-menu-item>
                 </md-menu-content>
             </md-menu>
@@ -196,141 +112,8 @@
                 </md-fab-speed-dial>
         </div>
     </md-toolbar>
-        <div ng-cloak="" class="tabsdemoDynamicHeight">
-            <md-content>
-                <md-tabs md-dynamic-height="" md-border-bottom="">
-                    <md-tab label="{{'MENU_MONITOR' | translate }}">
-                        <md-content class="md-padding">
-                            <md-content class="md-padding">
-                                <ng-view>
-                                
-                                </ng-view>
-                            </md-content>
-                    </md-tab>
-                    <md-tab label="{{'MENU_DEVICES' | translate }}">
-                        <md-content class="md-padding">
-                            <div class="md-padding selectdemoBasicUsage" ng-cloak="" layout="column">
-                                <md-card>
-                                    <md-card-title>
-                                        <md-card-title-text>
-                                            <span class="md-headline">{{'DEVICE_FORM_HEADER' | translate }}</span>
-                                            <span class="md-subhead">{{'DEVICE_FORM_FILLINGDATA' | translate }}</span>
-                                        </md-card-title-text>
-                                    </md-card-title>
-
-                                    <md-card-content ng-controller="DeviceFormController as DeviceForm">
-                                        <div layout="row">
-                                            <md-input-container>
-                                                <label>{{'DEVICE_FORM_IPADDRESS' | translate }}</label>
-                                                <input ng-model="DeviceForm.Device.DeviceIP" style="color:{{DeviceForm.ColorIP}}" ng-keyup="DeviceForm.isIPv4()" ng-pattern='/^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$/' required>
-                                            </md-input-container>
-
-                                            <md-input-container>
-                                                <label>{{'DEVICE_FORM_DEVICENAME' | translate }}</label>
-                                                <input ng-model="DeviceForm.Device.DeviceName" required>
-                                            </md-input-container>
-
-                                            <md-input-container>
-                                                <label>Тип устройства</label>
-                                                <md-select placeholder="{{'DEVICE_FORM_TYPEDEVICES' | translate }}" ng-model="DeviceForm.Device.DeviceType" md-on-open="DeviceForm.loadDeviceTypes()" style="min-width: 200px;" ng-change="DeviceForm.TypeChanged()" required>
-                                                    <md-option ng-repeat="DeviceType in DeviceForm.DeviceTypes" ng-value="DeviceType.TypeID">{{DeviceType.TypeName}}</md-option>
-                                                </md-select>
-                                            </md-input-container>
-                                        </div>
-                                        <div layout="column" ng-cloak="" class="chipsItemChips" ng-show="DeviceForm.ShowNext">
-                                            <md-content class="md-padding autocomplete" layout="column">
-                                                <md-contact-chips ng-model="DeviceForm.oids"
-                                                                  md-contacts="DeviceForm.querySearch($query)"
-                                                                  md-contact-name="name"
-                                                                  md-contact-image="image"
-                                                                  md-contact-email="email"
-                                                                  md-require-match="true"
-                                                                  md-highlight-flags="i"
-                                                                  filter-selected="DeviceForm.filterSelected"
-                                                                  placeholder="Параматры">
-                                                </md-contact-chips>
-
-                                                <md-list class="fixedRows">
-                                                    <md-subheader class="md-no-sticky">{{'DEVICE_FORM_AVAILABLEPARAMS' | translate }}</md-subheader>
-                                                    <md-list-item class="md-2-line contact-item" ng-repeat="(index, oid) in DeviceForm.allOIDs"
-                                                                  ng-if="DeviceForm.oids.indexOf(oid) < 0">
-                                                        <img ng-src="{{oid.image}}" class="md-avatar" alt="{{oid.name}}" />
-                                                        <div class="md-list-item-text compact">
-                                                            <h3>{{oid.name}}</h3>
-                                                            <p>{{oid.email}}</p>
-                                                        </div>
-                                                    </md-list-item>
-                                                    <md-list-item class="md-2-line contact-item selected" ng-repeat="(index, oid) in DeviceForm.oids">
-                                                        <img ng-src="{{oid.image}}" class="md-avatar" alt="{{oid.name}}" />
-                                                        <div class="md-list-item-text compact">
-                                                            <h3>{{oid.name}}</h3>
-                                                            <p>{{oid.email}}</p>
-                                                        </div>
-                                                    </md-list-item>
-                                                </md-list>
-                                            </md-content>
-                                        </div>
-
-                                        <div layout="row" ng-repeat="(index, oid) in DeviceForm.oids">
-
-                                            <md-input-container>
-                                                <label>Параметр</label>
-                                                <input value="{{oid.name}}" disabled>
-                                            </md-input-container>
-
-                                            <md-input-container ng-if="oid.Type == 'int'">
-                                                <label>Условия</label>
-                                                <input ng-model="oid.Conditions">
-                                            </md-input-container>
-
-                                            <md-checkbox ng-model="oid.Notification" class="md-primary">
-                                                Оповещение на e-mail
-                                            </md-checkbox>
-
-                                        </div>
-
-                                        <md-button class="md-raised md-primary" style="width: 50px; margin: inherit;" ng-click="DeviceForm.CreateDevice($event)">Добавить</md-button>
-
-                                    </md-card-content>
-                                </md-card>
-                            </div>
-                        </md-content>
-                    </md-tab>
-                    <md-tab label="{{'MENU_SETTINGS' | translate }}">
-                        <md-content class="md-padding">
-                            <div class="inset switchdemoBasicUsage" ng-controller="SwitchDemoCtrl" ng-cloak="" ng-app="MyApp">
-                                <md-switch ng-model="data.cb1" aria-label="Switch 1">
-                                    Switch 1: {{ data.cb1 }}
-                                </md-switch>
-
-                                <md-switch ng-model="data.cb2" aria-label="Switch 2" ng-true-value="'yup'" ng-false-value="'nope'" class="md-warn">
-                                    Switch 2 (md-warn): {{ data.cb2 }}
-                                </md-switch>
-
-                                <md-switch ng-disabled="true" aria-label="Disabled switch" ng-model="disabledModel">
-                                    Switch (Disabled)
-                                </md-switch>
-
-                                <md-switch ng-disabled="true" aria-label="Disabled active switch" ng-model="data.cb4">
-                                    Switch (Disabled, Active)
-                                </md-switch>
-
-                                <md-switch class="md-primary" md-no-ink="" aria-label="Switch No Ink" ng-model="data.cb5">
-                                    Switch (md-primary): No Ink
-                                </md-switch>
-
-                                <md-switch ng-model="data.cb6" aria-label="Switch 6" ng-change="onChange(data.cb6)">
-                                    Switch 6 message: {{ message }}
-                                </md-switch>
-
-                                <md-switch md-invert="" aria-label="Switch 7">
-                                    Switch (Inverted)
-                                </md-switch>
-                            </div>
-                        </md-content>
-                    </md-tab>
-                </md-tabs>
-            </md-content>
-        </div>
+    <ng-view>
+        
+    </ng-view>
 </body>
 </html>

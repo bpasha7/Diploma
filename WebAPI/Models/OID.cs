@@ -19,5 +19,7 @@ namespace WebAPI.Models
         public string Name { get; set; }
         public string OID1 { get; set; }
         public string ValueType { get; set; }
+        public string Commentary { get; set; }
+        public string Measure { get; set; }
     }
 }
