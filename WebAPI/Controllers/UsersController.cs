@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebAPI.Models;
+using Newtonsoft.Json;
 
 namespace WebAPI.Controllers
 {
@@ -25,13 +26,18 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/user/login")]
-        public int GetMonitoringData([FromUri]string email, [FromUri]string password)
+        public string GetMonitoringData([FromUri]string email, [FromUri]string password)
         {
             var users = db.Users.Where(x=> (x.Email == email) && (x.Pass == password)).ToList();
             if (users.Count == 1)
-                return users[0].UserID;
+                return JsonConvert.SerializeObject(users[0],
+                            Newtonsoft.Json.Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore
+                            });
             else
-                return 0;
+                return null;
         }
 
 

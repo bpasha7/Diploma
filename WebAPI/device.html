@@ -13,11 +13,12 @@
             <md-card-title-media>
                 <div class="md-media-lg card-media" style="background: green">
                     <img class="imgCard" ng-src="/public/images/pc.png" style="" />
+                    <md-progress-linear md-mode="determinate" value="{{Device.ProgressLinear}}" style="margin-top: 2px;"></md-progress-linear>
                 </div>
             </md-card-title-media>
-
+            
         </md-card-title>
-
+        
         <md-card-actions layout="row" layout-align="end center">
             <md-button ng-click="Device.startMonitoring()">{{'DEVICE_MONITOR_BUTTON_START' | translate }}</md-button>
             <md-button ng-click="Device.UpdateChart()">{{'DEVICE_MONITOR_BUTTON_EDIT' | translate }}</md-button>
@@ -39,9 +40,10 @@
             <md-card md-theme="" md-theme-watch style="width: 400px;height: 260px;padding: 10px; display: inline-block" ng-repeat="Chart in Device.MonitoingCharts">
                 <div class="panel-heading">{{Chart.name}}</div>
                 <div class="panel-body">
-                    <canvas id="line" class="chart chart-line" chart-data="Chart.data"
+                    <canvas id="line" class="chart chart-line" chart-data="Chart.data" chart-options="Chart.options"
+                            chart-colors="Chart.colors"
                             chart-labels="Chart.labels" chart-series="Chart.series"
-                            chart-click="" width="400" height="250" style="width:400px;height:250px"></canvas>
+                            width="400" height="250" style="width:400px;height:250px"></canvas>
                 </div>
             </md-card>
 

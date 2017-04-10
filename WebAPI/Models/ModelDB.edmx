@@ -5,6 +5,17 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Хранилище monitoringModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Allerts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Message" Type="text" />
+          <Property Name="MessageDate" Type="datetime" />
+          <Property Name="isRead" Type="bit" />
+          <Property Name="Header" Type="text" />
+        </EntityType>
         <EntityType Name="Devices">
           <Key>
             <PropertyRef Name="DeviceID" />
@@ -40,6 +51,7 @@
           <Property Name="OID" Type="int" Nullable="false" />
           <Property Name="Conditions" Type="nvarchar(max)" />
           <Property Name="Notification" Type="bit" Nullable="false" />
+          <Property Name="Explanation" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="OIDs">
           <Key>
@@ -82,6 +94,7 @@
           <Property Name="OIDS" Type="nvarchar(max)" />
         </EntityType>
         <EntityContainer Name="Хранилище monitoringModelContainer">
+          <EntitySet Name="Allerts" EntityType="Self.Allerts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Devices" EntityType="Self.Devices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeviceType" EntityType="Self.DeviceType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Groups" EntityType="Self.Groups" Schema="dbo" store:Type="Tables" />
@@ -140,6 +153,7 @@
           <Property Name="OID" Type="Int32" Nullable="false" />
           <Property Name="Conditions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Notification" Type="Boolean" Nullable="false" />
+          <Property Name="Explanation" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="OID">
           <Key>
@@ -161,6 +175,7 @@
           <EntitySet Name="OIDs" EntityType="Self.OID" />
           <EntitySet Name="ViewDevices" EntityType="monitoringModel.ViewDevice" />
           <EntitySet Name="Users" EntityType="monitoringModel.User" />
+          <EntitySet Name="Allerts" EntityType="monitoringModel.Allert" />
         </EntityContainer>
         <EntityType Name="ViewDevice">
           <Key>
@@ -187,6 +202,17 @@
           <Property Name="Email" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Pass" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EmailAllert" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Allert">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="MessageDate" Type="DateTime" Precision="3" />
+          <Property Name="isRead" Type="Boolean" />
+          <Property Name="Header" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -226,6 +252,7 @@
           <EntitySetMapping Name="MonitoringEvents">
             <EntityTypeMapping TypeName="monitoringModel.MonitoringEvent">
               <MappingFragment StoreEntitySet="MonitoringEvents">
+                <ScalarProperty Name="Explanation" ColumnName="Explanation" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
                 <ScalarProperty Name="OID" ColumnName="OID" />
@@ -269,6 +296,18 @@
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Allerts">
+            <EntityTypeMapping TypeName="monitoringModel.Allert">
+              <MappingFragment StoreEntitySet="Allerts">
+                <ScalarProperty Name="Header" ColumnName="Header" />
+                <ScalarProperty Name="isRead" ColumnName="isRead" />
+                <ScalarProperty Name="MessageDate" ColumnName="MessageDate" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

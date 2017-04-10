@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("api/Device/snmp")]
-        public string GetMonitoringData([FromUri]int id)
+        public string GetMonitoringData([FromUri]int id, [FromUri]int userId)
         {
             ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
             // var r = JObject.Parse(viewDevice.OIDS).ToObject<DeviceMonitor[]>();
@@ -34,6 +34,8 @@ namespace WebAPI.Controllers
             MonitoringData[] monitoringData = Newtonsoft.Json.JsonConvert.DeserializeObject<MonitoringData[]>(oidsArray);
             DeviceMonitor deviceMonitor = new DeviceMonitor(viewDevice);
             deviceMonitor.Run(monitoringData);
+            deviceMonitor.CheckConditions(userId);
+
             return deviceMonitor.ToJSON();
 
 

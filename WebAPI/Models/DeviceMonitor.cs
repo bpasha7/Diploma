@@ -15,16 +15,23 @@ namespace WebAPI.Models
         public bool Notification { get; set; }
         public string ValueType { get; set; }
         public string Measure { get; set; }
+        public string  Explanation { get; set; }
 
     }
     public class MonitoringResults : MonitoringData
     {
-       // public string Name { get; set; }
         public string Value { get; set; }
-/*
-        public string ValueType { get; set; }
-        public string Measure { get; set; }*/
     
+        public MonitoringResults(string name, string val, string valueType, string measure, string conditions, string explanation, bool notification)
+        {
+            Name = name;
+            Value = val;
+            ValueType = valueType;
+            Measure = measure;
+            Conditions = conditions;
+            Explanation = explanation;
+            Notification = notification;
+        }
         public MonitoringResults(string name, string val, string valueType, string measure)
         {
             Name = name;
@@ -41,6 +48,8 @@ namespace WebAPI.Models
         public List<MonitoringResults> monitoringProperties = new List<MonitoringResults>();
         public string TypeName;
         SimpleSnmp snmp;
+        //is null into json?
+        private monitoringEntities db = new monitoringEntities();
 
         public DeviceMonitor(ViewDevice viewDevice)
         {
@@ -64,6 +73,120 @@ namespace WebAPI.Models
                             {
                                 NullValueHandling = NullValueHandling.Ignore
                             });
+        }
+
+        public void CheckConditions(int UserId)
+        {
+            var allert = new Allert();
+            allert.UserID = UserId;
+            allert.MessageDate = DateTime.Now;
+            allert.isRead = false;
+            foreach (var monitoringResult in monitoringResults)
+            {
+                if (monitoringResult.Conditions == null && monitoringResult.ValueType == "numeric")
+                    continue;
+                if (hasProblem(monitoringResult.Conditions.Replace("res", monitoringResult.Value)) == 1)
+                {
+                    allert.Message = monitoringResult.Explanation;
+                    allert.Header = string.Format("{0} [{1}]", DeviceName, DeviceIP);
+                    db.Allerts.Add(allert);
+                    /*if(monitoringResult.Notification)
+                    {
+                        //send to email
+                    }*/
+                }
+            }
+            db.SaveChangesAsync();
+        }
+        static private int hasProblem(string con)
+        {
+            int res = -1;
+            System.Text.StringBuilder Con = new System.Text.StringBuilder(con);
+            string temp = "";
+            while (Con.ToString().IndexOf('(') != -1)
+            {
+                temp = Con.ToString().Substring(Con.ToString().LastIndexOf('(') + 1);
+                temp = temp.Substring(0, temp.IndexOf(')'));
+                res = ParseCondition(temp);
+                if (res != -1)
+                    Con.Replace("(" + temp + ")", res.ToString());
+                else
+                    return -1;
+            }
+            return res;
+        }
+        static private int ParseCondition(string con)
+        {
+            string[] acts = { ">=", "<=", "<", ">", "==", "!=", "&&", "||" };
+            string act = "";
+            foreach (var item in acts)
+            {
+                if (con.Contains(item))
+                {
+                    act = item;
+                    break;
+                }
+            }
+            var MyConditionParams = con.Split(acts, StringSplitOptions.RemoveEmptyEntries);
+            if (MyConditionParams.Length != 2)
+                return -1;
+            return CompareParameters(Convert.ToInt32(MyConditionParams[0]), Convert.ToInt32(MyConditionParams[1]), act);
+
+        }
+        static private int CompareParameters(int a, int b, string action)
+        {
+            switch (action)
+            {
+                case "&&":
+                    return CaclculateBinary(a, b, action);
+                case "||":
+                    return CaclculateBinary(a, b, action);
+                case ">=":
+                    if (a >= b)
+                        return 1;
+                    return 0;
+                case "<=":
+                    if (a <= b)
+                        return 1;
+                    return 0;
+                case ">":
+                    if (a > b)
+                        return 1;
+                    return 0;
+                case "==":
+                    if (a == b)
+                        return 1;
+                    return 0;
+                case "<":
+                    if (a < b)
+                        return 1;
+                    return 0;
+                case "!=":
+                    if (a != b)
+                        return 1;
+                    return 0;
+                default:
+                    return -1;
+            }
+        }
+
+        static private int CaclculateBinary(int a, int b, string action)
+        {
+            switch (action)
+            {
+                case "&&":
+                    a *= b;
+                    break;
+                case "||":
+                    a += b;
+                    break;
+                default:
+                    break;
+            }
+            if (a > 1)
+                return 1;
+            else
+                return a;
         }
         /// <summary>
         /// 
@@ -110,14 +233,13 @@ namespace WebAPI.Models
         /// <summary>
         /// Выполнение get команды для получения параметра мониторинга
         /// </summary>
-        /// <param name="pdu"></param>
+        /// <param OID="string"></param>
         /// <returns></returns>
         private string SNMPGet(string OID)
         {
             Pdu pdu = new Pdu();
             pdu.VbList.Add(OID);
             var result = snmp.GetNext(SnmpVersion.Ver2, pdu);
-            //pdu.VbList.Clear();
             return result.First().Value.ToString();
         }
         private void AddToList(List<MonitoringResults> MyListResult, MonitoringResults MyResult)
@@ -139,11 +261,11 @@ namespace WebAPI.Models
                 {
                     switch (monitoringData[i].ValueType)
                     {
-                        case "int":
+                        case "numeric":
                             if (monitoringData[i].OID.IndexOf('{') != -1)
-                                AddToList(monitoringResults, new MonitoringResults(monitoringData[i].Name, this.CaclculateComplexOID(monitoringData[i].OID), monitoringData[i].ValueType, monitoringData[i].Measure));
+                                AddToList(monitoringResults, new MonitoringResults(monitoringData[i].Name, this.CaclculateComplexOID(monitoringData[i].OID), monitoringData[i].ValueType, monitoringData[i].Measure, monitoringData[i].Conditions, monitoringData[i].Explanation, monitoringData[i].Notification));
                             else
-                                AddToList(monitoringResults, new MonitoringResults(monitoringData[i].Name, this.SNMPGet(monitoringData[i].OID), monitoringData[i].ValueType, monitoringData[i].Measure));
+                                AddToList(monitoringResults, new MonitoringResults(monitoringData[i].Name, this.SNMPGet(monitoringData[i].OID), monitoringData[i].ValueType, monitoringData[i].Measure, monitoringData[i].Conditions, monitoringData[i].Explanation, monitoringData[i].Notification));
                             break;
                         case "string":
                             if (monitoringData[i].OID.IndexOf('{') != -1)

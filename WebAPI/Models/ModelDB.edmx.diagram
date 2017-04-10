@@ -12,6 +12,7 @@
         <EntityTypeShape EntityType="monitoringModel.OID" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="monitoringModel.ViewDevice" Width="1.5" PointX="7.5" PointY="3.625" />
         <EntityTypeShape EntityType="monitoringModel.User" Width="1.5" PointX="5.375" PointY="3.75" />
+        <EntityTypeShape EntityType="monitoringModel.Allert" Width="1.5" PointX="0.75" PointY="6.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,0 +1,33 @@
+﻿<div role="dialog" layout="column" layout-align="center center" style="background:rgb(250, 250, 250)" data-ng-init="Ctrl.UpdateAllerts()">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>События</h2>
+        </div>
+    </md-toolbar>
+    <div class="allert-dialog-content" >
+            <md-list flex="" style="width: 450px">
+                <md-list-item class="md-2-line" ng-click="null" ng-repeat="allert in Ctrl.Allerts">
+                    <img ng-src="public/images/warning.svg" class="md-avatar" alt="">
+                    <div class="md-list-item-text" layout="column">
+                        <h3>{{allert.Header}}</h3>
+                        <p>{{allert.Message}}</p>
+                    </div>
+                    <md-button class="md-secondary md-icon-button">
+                        <md-tooltip md-direction="left" md-z-index="160"><b>{{allert.MessageDate}}</b></md-tooltip><!---->
+                        <md-icon md-svg-icon="public/images/date.svg"></md-icon> 
+                    </md-button>
+                    <md-button class="md-secondary md-icon-button" >
+                        <md-icon md-svg-icon="public/images/dustbin.svg"></md-icon>
+                    </md-button>
+                </md-list-item>
+            </md-list>
+        <div layout="row"  class="alert-dialog-button">
+            <md-button class="md-primary" ng-click="Ctrl.closeDialog()">
+                Закрыть
+            </md-button>
+            <md-button class="md-primary">
+                Очистить
+            </md-button>
+        </div>
+    </div>
+</div>

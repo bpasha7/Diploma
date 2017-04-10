@@ -123,6 +123,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="alerts.html" />
     <Content Include="Content\angular-material.css" />
     <Content Include="Content\angular-material.layout-attributes.css" />
     <Content Include="Content\angular-material.layout-attributes.min.css" />
@@ -166,6 +167,10 @@
     <Content Include="Scripts\angular-cookies.min.js" />
     <Content Include="Scripts\angular-messages.js" />
     <Content Include="Scripts\angular-messages.min.js" />
+    <Content Include="Scripts\app\app.device.js" />
+    <Content Include="Scripts\app\app.form.device.js" />
+    <Content Include="Scripts\app\app.login.js" />
+    <Content Include="Scripts\app\app.menu.js" />
     <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\moment-with-locales.js" />
@@ -187,13 +192,14 @@
     <Content Include="Scripts\angular\angular.js" />
     <Content Include="Scripts\angular\angular.min.js" />
     <Content Include="Scripts\app.js" />
-    <Content Include="Scripts\languages.js" />
+    <Content Include="Scripts\app\app.languages.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AllertsController.cs" />
     <Compile Include="Controllers\DevicesController.cs" />
     <Compile Include="Controllers\DeviceTypesController.cs" />
     <Compile Include="Controllers\MonitorController.cs" />
@@ -203,6 +209,9 @@
     <Compile Include="Controllers\ViewDevicesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Allert.cs">
+      <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Device.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
@@ -267,6 +276,7 @@
     <Content Include="Scripts\angular-messages.min.js.map" />
     <Content Include="Scripts\angular-cookies.min.js.map" />
     <Content Include="Scripts\angular-chart.min.js.map" />
+    <Content Include="Scripts\app\app.allert.js" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

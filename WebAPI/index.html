@@ -51,11 +51,19 @@
 
 <script src="/Scripts/angular-cookies.js"></script>
 
+
+
+
+
+<!-- app -->
 <script src="/Scripts/app.js"></script>
+<script src="/Scripts//app/app.languages.js"></script>
 
-<script src="/Scripts/languages.js"></script>
-
-
+<script src="/Scripts/app/app.allert.js"></script>
+<script src="/Scripts/app/app.device.js"></script>
+<script src="/Scripts/app/app.form.device.js"></script>
+<script src="/Scripts/app/app.login.js"></script>
+<script src="/Scripts/app/app.menu.js"></script>
 
 
 
@@ -69,26 +77,36 @@
 
             <h2 flex="" md-truncate="" >{{'HEADLINE' | translate }}</h2>
 
-            <md-menu md-offset="0 -7" ng-controller="UserMenuController as UserMenu">
-                <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdMenu.open($event)">
-                    <md-icon md-menu-origin="" md-svg-icon="public/images/user.svg"></md-icon>
+                <md-button class="animation-target md-icon-button" ng-controller="MenuAlertController as MenuAllert" ng-click="MenuAllert.ShowDialog($event)">
+                    <md-icon md-svg-icon="public/images/bell.svg"></md-icon><span style="background:red; display: block; position: relative; top: -25px; left: 12px; height: 17px; width:17px; border-radius:17px;"><div style="position: relative; top: -2.8px;font-size: 10pt;">8</div></span>
                 </md-button>
-                <md-menu-content width="3">
-                    <md-menu-item ng-click="UserMenu.goLogin()">
-                        <md-button> <span md-menu-align-target="" >Войти</span></md-button>
-                    </md-menu-item>
-                    <md-menu-item>
-                        <md-button> <span md-menu-align-target="">Настройки</span></md-button>
-                    </md-menu-item>
-                    <md-menu-item>
-                        <md-button> <span md-menu-align-target="">Выйти</span></md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu>
+
+                <md-menu md-offset="0 50" ng-controller="UserMenuController as UserMenu">
+
+                    <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdMenu.open($event)">
+                        <md-icon md-menu-origin="" md-svg-icon="public/images/user.svg"></md-icon>
+                    </md-button>
+                    <md-menu-content width="3">
+                        <md-menu-item ng-if="UserMenu.isLogined()">
+                            <span md-menu-align-target="">{{UserMenu.UserName}}</span>
+                        </md-menu-item>
+                        <md-divider></md-divider>
+                        <md-menu-item ng-click="UserMenu.goLogin()" ng-if="!UserMenu.isLogined()">
+                            <md-button> <span md-menu-align-target="">Войти</span></md-button>
+                        </md-menu-item>
+                        <md-menu-item ng-if="UserMenu.isLogined()">
+                            <md-button> <span md-menu-align-target="">Настройки</span></md-button>
+                        </md-menu-item>
+                        <md-divider></md-divider>
+                        <md-menu-item ng-click="UserMenu.LogOut()" ng-if="UserMenu.isLogined()">
+                            <md-button> <span md-menu-align-target="" >Выйти</span></md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
 
 
 
-                <md-fab-speed-dial md-direction="down"  ng-cloak="" ng-class="MonitoringMenu.selectedMode" style="top: 39px;">
+                <md-fab-speed-dial md-direction="down" ng-cloak="" ng-class="MonitoringMenu.selectedMode" style="top: 39px;">
                     <md-fab-trigger>
                         <md-button aria-label="menu" class="md-fab md-warn" style="background:#283593;">
                             <md-icon md-svg-src="public/images/internet.svg"></md-icon>
@@ -110,7 +128,7 @@
                         </md-button>
                     </md-fab-actions>
                 </md-fab-speed-dial>
-        </div>
+</div>
     </md-toolbar>
     <ng-view>
         

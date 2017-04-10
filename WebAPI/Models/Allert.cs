@@ -12,13 +12,13 @@ namespace WebAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class MonitoringEvent
+    public partial class Allert
     {
         public int ID { get; set; }
-        public int DeviceID { get; set; }
-        public int OID { get; set; }
-        public string Conditions { get; set; }
-        public bool Notification { get; set; }
-        public string Explanation { get; set; }
+        public int UserID { get; set; }
+        public string Message { get; set; }
+        public Nullable<System.DateTime> MessageDate { get; set; }
+        public Nullable<bool> isRead { get; set; }
+        public string Header { get; set; }
     }
 }
