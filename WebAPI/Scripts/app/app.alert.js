@@ -5,17 +5,17 @@ angular
     .module('MyApp')
     .service('AlertService', function ($http, $cookies) {
         //поправить имена функций
-        this.GetAllerts = function () {
+        this.GetAlerts = function () {
             var UserId = $cookies.get('userId');
-            return $http.get("/api/Allerts?UserId=" + UserId)
-        .then(getAllertsComplete)
-        .catch(getAllertsFailed);
+            return $http.get("/api/Alerts?UserId=" + UserId)
+        .then(getAlertsComplete)
+        .catch(getAlertsFailed);
 
-            function getAllertsComplete(data, status, headers, config) {
+            function getAlertsComplete(data, status, headers, config) {
                 return data.data;
             }
 
-            function getAllertsFailed(e) {
+            function getAlertsFailed(e) {
                 var newMessage = 'XHR Failed for GetDeviceSNMPData'
                 if (e.data && e.data.description) {
                     newMessage = newMessage + '\n' + e.data.description;
@@ -24,6 +24,19 @@ angular
                 logger.error(newMessage);
                 return $q.reject(e);
             }
+        }
+        this.SetRead = function (msg) {
+            return $http({
+                method: 'put',
+                url: '/api/Alerts/',// + msg.ID,
+                data: msg
+            }).then(function successCallback(response) {
+                // this callback will be called asynchronously
+                // when the response is available
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+            });
         }
     });
 
@@ -80,18 +93,36 @@ function DialogController(mdPanelRef, AlertService) {
     var self = this;
     //
 
-    self.Allerts = null;
+    self.Alerts = null;
     self._mdPanelRef = mdPanelRef;
     self.closeDialog = function () {
         self._mdPanelRef && self._mdPanelRef.close();
     }
 
-    self.UpdateAllerts = function () {
+    self.HasAlerts = function () {
+        if (self.Alerts == null || self.Alerts.length == 0)
+            return false;
+        else
+            return true;
+    }
+
+    self.UpdateAlerts = function () {
         
-        AlertService.GetAllerts().then(function (result) {
-            self.Allerts = angular.fromJson(result);
+        AlertService.GetAlerts().then(function (result) {
+            self.Alerts = angular.fromJson(result);
         })
     }
-    self.UpdateAllerts();
+
+    self.Read = function (id) {
+        var msg = self.Alerts.filter(function (obj) {
+            return obj.ID == id;
+        })[0];
+        msg.isRead = true;
+        AlertService.SetRead(msg)
+            .then(function () {
+                self.UpdateAlerts();
+            });
+    }
+    //self.UpdateAlerts();
 
 }

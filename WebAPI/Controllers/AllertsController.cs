@@ -13,21 +13,39 @@ using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
-    public class AllertsController : ApiController
+    public class AlertsController : ApiController
     {
         private monitoringEntities db = new monitoringEntities();
 
-        // GET: api/Allerts
-        public IQueryable<Allert> GetAllerts([FromUri]int UserId)
+      /*  [HttpPut]
+        [Route("api/Allerts/read")]
+        public string GetMonitoringData([FromUri]int id, [FromUri]int userId)
         {
-            return db.Allerts.Where(a=> (a.UserID == UserId) && (a.isRead == false)).OrderByDescending(a=> a.MessageDate);
+            ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
+            // var r = JObject.Parse(viewDevice.OIDS).ToObject<DeviceMonitor[]>();
+            string oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
+            MonitoringData[] monitoringData = Newtonsoft.Json.JsonConvert.DeserializeObject<MonitoringData[]>(oidsArray);
+            DeviceMonitor deviceMonitor = new DeviceMonitor(viewDevice);
+            deviceMonitor.Run(monitoringData);
+            deviceMonitor.CheckConditions(userId);
+
+            return deviceMonitor.ToJSON();
+
+
+        }*/
+
+
+        // GET: api/Allerts
+        public IQueryable<Alert> GetAllerts([FromUri]int UserId)
+        {
+            return db.Alerts.Where(a=> (a.UserID == UserId) && (a.isRead == false)).OrderByDescending(a=> a.MessageDate);
         }
 
         // GET: api/Allerts/5
-        [ResponseType(typeof(Allert))]
+        [ResponseType(typeof(Alert))]
         public async Task<IHttpActionResult> GetAllert(int id)
         {
-            Allert allert = await db.Allerts.FindAsync(id);
+            Alert allert = await db.Alerts.FindAsync(id);
             if (allert == null)
             {
                 return NotFound();
@@ -38,19 +56,19 @@ namespace WebAPI.Controllers
 
         // PUT: api/Allerts/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutAllert(int id, Allert allert)
+        public async Task<IHttpActionResult> PutAllert(Alert alert)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != allert.ID)
+           /* if (id != allert.ID)
             {
                 return BadRequest();
-            }
+            }*/
 
-            db.Entry(allert).State = EntityState.Modified;
+            db.Entry(alert).State = EntityState.Modified;
 
             try
             {
@@ -58,45 +76,45 @@ namespace WebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AllertExists(id))
+                /*if (!AllertExists(id))
                 {
                     return NotFound();
                 }
                 else
                 {
                     throw;
-                }
+                }*/
             }
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST: api/Allerts
-        [ResponseType(typeof(Allert))]
-        public async Task<IHttpActionResult> PostAllert(Allert allert)
+        [ResponseType(typeof(Alert))]
+        public async Task<IHttpActionResult> PostAllert(Alert alert)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Allerts.Add(allert);
+            db.Alerts.Add(alert);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = allert.ID }, allert);
+            return CreatedAtRoute("DefaultApi", new { id = alert.ID }, alert);
         }
 
         // DELETE: api/Allerts/5
-        [ResponseType(typeof(Allert))]
+        [ResponseType(typeof(Alert))]
         public async Task<IHttpActionResult> DeleteAllert(int id)
         {
-            Allert allert = await db.Allerts.FindAsync(id);
+            Alert allert = await db.Alerts.FindAsync(id);
             if (allert == null)
             {
                 return NotFound();
             }
 
-            db.Allerts.Remove(allert);
+            db.Alerts.Remove(allert);
             await db.SaveChangesAsync();
 
             return Ok(allert);
@@ -113,7 +131,7 @@ namespace WebAPI.Controllers
 
         private bool AllertExists(int id)
         {
-            return db.Allerts.Count(e => e.ID == id) > 0;
+            return db.Alerts.Count(e => e.ID == id) > 0;
         }
     }
 }

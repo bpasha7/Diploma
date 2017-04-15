@@ -5,7 +5,7 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Хранилище monitoringModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Allerts">
+        <EntityType Name="Alerts">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -94,7 +94,7 @@
           <Property Name="OIDS" Type="nvarchar(max)" />
         </EntityType>
         <EntityContainer Name="Хранилище monitoringModelContainer">
-          <EntitySet Name="Allerts" EntityType="Self.Allerts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Alerts" EntityType="Self.Alerts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Devices" EntityType="Self.Devices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeviceType" EntityType="Self.DeviceType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Groups" EntityType="Self.Groups" Schema="dbo" store:Type="Tables" />
@@ -175,7 +175,7 @@
           <EntitySet Name="OIDs" EntityType="Self.OID" />
           <EntitySet Name="ViewDevices" EntityType="monitoringModel.ViewDevice" />
           <EntitySet Name="Users" EntityType="monitoringModel.User" />
-          <EntitySet Name="Allerts" EntityType="monitoringModel.Allert" />
+          <EntitySet Name="Alerts" EntityType="monitoringModel.Alert" />
         </EntityContainer>
         <EntityType Name="ViewDevice">
           <Key>
@@ -203,7 +203,7 @@
           <Property Name="Pass" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EmailAllert" Type="Boolean" Nullable="false" />
         </EntityType>
-        <EntityType Name="Allert">
+        <EntityType Name="Alert">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -299,9 +299,9 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Allerts">
-            <EntityTypeMapping TypeName="monitoringModel.Allert">
-              <MappingFragment StoreEntitySet="Allerts">
+          <EntitySetMapping Name="Alerts">
+            <EntityTypeMapping TypeName="monitoringModel.Alert">
+              <MappingFragment StoreEntitySet="Alerts">
                 <ScalarProperty Name="Header" ColumnName="Header" />
                 <ScalarProperty Name="isRead" ColumnName="isRead" />
                 <ScalarProperty Name="MessageDate" ColumnName="MessageDate" />

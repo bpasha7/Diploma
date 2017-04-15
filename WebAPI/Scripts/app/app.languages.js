@@ -26,7 +26,12 @@
 	LOGIN_SIGNUP_FAIL: 'Not corret email/password! Try again!',
 	DEVICE_MONITOR_LABEL_DURATION: 'Duration',
 	DEVICE_MONITOR_BUTTON_START: 'Start',
-	DEVICE_MONITOR_BUTTON_EDIT: 'Edit'
+	DEVICE_MONITOR_BUTTON_EDIT: 'Edit',
+	DEVICE_MONITOR_BUTTON_STOP: 'Stop',
+	DEVICE_MONITOR_PROPERIES: 'Properties',
+	ALERT_DIALOG_CLEAR: 'Clear',
+	ALERT_DIALOG_HEADER: 'Alerts'
+
 	
 	
 };
@@ -59,9 +64,11 @@ var translationsRU = {
 	LOGIN_SIGNUP_FAIL: 'Не правильные email/пароль! Попробуйте заново!',
 	DEVICE_MONITOR_LABEL_DURATION: 'Обновление',
 	DEVICE_MONITOR_BUTTON_START: 'Запуск',
-	DEVICE_MONITOR_BUTTON_EDIT: 'Изменить'
-	
-	
+	DEVICE_MONITOR_BUTTON_EDIT: 'Изменить',
+	DEVICE_MONITOR_BUTTON_STOP: 'Стоп',
+	DEVICE_MONITOR_PROPERIES: 'Свойства',
+	ALERT_DIALOG_CLEAR: 'Очистить',
+	ALERT_DIALOG_HEADER: 'Оповещения'
 };
 
 angular.module('MyApp').config(['$translateProvider', function ($translateProvider) {

@@ -68,19 +68,23 @@ angular.module('MyApp').controller('DeviceController', function ($cookies, $scop
     self.Period = 20;
     self.MonitoingCharts = [];
     self.MonitoingProperties = [];
+    self.MonitoingTabs;
     self.ProgressLinear = 0;
     self.timeLeft = 0;
+    self.isRun = false;
     self.UserId = $cookies.get('userId');
     var stop;
-    var prgStop;
-    self.StartProgress = function () {
-        prgStop = $interval(function () {
-            self.ProgressLinear = (self.timeLeft++ / self.Period) * 100;
-        }, 950);
+    self.stopMonitoring = function () {
+        if (angular.isDefined(stop)) {
+            $interval.cancel(stop);
+            self.ProgressLinear = 0;
+            self.isRun = false;
+            stop = undefined;
+        }
     }
     self.startMonitoring = function () {
         if (angular.isDefined(stop)) return;
-
+        self.isRun = true;
         stop = $interval(function () {
             self.ProgressLinear = (++self.timeLeft / self.Period) * 100;
             if (self.timeLeft > self.Period) {
@@ -98,10 +102,14 @@ angular.module('MyApp').controller('DeviceController', function ($cookies, $scop
         .then(function () {
             self.UpdateMonitoingCharts();
             self.UpdateMonitoringProperies();
+            //self.UpdateMonitoringLists();
         });
     }
     self.UpdateMonitoringProperies = function () {
         self.MonitoingProperties = self.DeviceSNMP.monitoringProperties;
+    }
+    self.UpdateMonitoringLists = function () {
+        self.MonitoingTabs = self.DeviceSNMP.monitoringList;
     }
     self.UpdateMonitoingCharts = function () {
         var data = self.DeviceSNMP.monitoringResults;

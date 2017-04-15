@@ -1,32 +1,32 @@
-﻿<div role="dialog" layout="column" layout-align="center center" style="background:rgb(250, 250, 250)" data-ng-init="Ctrl.UpdateAllerts()">
+﻿<div role="dialog" layout="column" layout-align="center center" style="background:rgb(250, 250, 250)" data-ng-init="Ctrl.UpdateAlerts()">
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <h2>События</h2>
+            <h2>{{'ALERT_DIALOG_HEADER' | translate }}</h2>
+            <md-button class="animation-target md-icon-button" ng-click="Ctrl.closeDialog()" style="position: absolute; right: 15px;">
+                <md-icon md-svg-icon="public/images/close.svg">
+            </md-button>
         </div>
     </md-toolbar>
-    <div class="allert-dialog-content" >
-            <md-list flex="" style="width: 450px">
-                <md-list-item class="md-2-line" ng-click="null" ng-repeat="allert in Ctrl.Allerts">
+    <div class="alert-dialog-content">
+            <md-list flex="" style="width: 450px; height: auto; max-height: 350px; overflow: auto;">
+                <md-list-item class="md-2-line" ng-click="null" ng-repeat="alert in Ctrl.Alerts">
                     <img ng-src="public/images/warning.svg" class="md-avatar" alt="">
                     <div class="md-list-item-text" layout="column">
-                        <h3>{{allert.Header}}</h3>
-                        <p>{{allert.Message}}</p>
+                        <h3>{{alert.Header}}</h3>
+                        <p>{{alert.Message}}</p>
                     </div>
-                    <md-button class="md-secondary md-icon-button">
-                        <md-tooltip md-direction="left" md-z-index="160"><b>{{allert.MessageDate}}</b></md-tooltip><!---->
+                    <md-button class="md-secondary md-icon-button" >
+                        <md-tooltip md-direction="left" md-z-index="160">{{alert.MessageDate}}</md-tooltip><!---->
                         <md-icon md-svg-icon="public/images/date.svg"></md-icon> 
                     </md-button>
-                    <md-button class="md-secondary md-icon-button" >
+                    <md-button class="md-secondary md-icon-button" ng-click="Ctrl.Read(alert.ID)">
                         <md-icon md-svg-icon="public/images/dustbin.svg"></md-icon>
                     </md-button>
                 </md-list-item>
             </md-list>
-        <div layout="row"  class="alert-dialog-button">
-            <md-button class="md-primary" ng-click="Ctrl.closeDialog()">
-                Закрыть
-            </md-button>
-            <md-button class="md-primary">
-                Очистить
+        <div class="alert-dialog-button">
+            <md-button layout="column"  class="md-primary" ng-if="Ctrl.HasAlerts()" style="float:right;">
+                {{'ALERT_DIALOG_CLEAR' | translate }}
             </md-button>
         </div>
     </div>

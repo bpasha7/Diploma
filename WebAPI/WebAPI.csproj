@@ -146,18 +146,10 @@
       <LastGenOutput>ModelDB.cs</LastGenOutput>
     </Content>
     <Content Include="monitor.html" />
-    <Content Include="public\images\add.png" />
-    <Content Include="public\images\del.png" />
-    <Content Include="public\images\edit.gif" />
     <Content Include="public\images\eye.png" />
     <Content Include="public\images\pc.png" />
-    <Content Include="public\images\plus.png" />
     <Content Include="public\images\printer.png" />
-    <Content Include="public\images\proc.gif" />
-    <Content Include="public\images\q.png" />
-    <Content Include="public\images\refresh.png" />
     <Content Include="public\images\router.png" />
-    <Content Include="public\images\search.png" />
     <Content Include="public\Styles\DeviceFormEdit.css" />
     <Content Include="public\Styles\login.css" />
     <Content Include="public\Styles\Menu.css" />
@@ -210,7 +202,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Allert.cs">
+    <Compile Include="Models\Alert.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Device.cs">
@@ -276,7 +268,7 @@
     <Content Include="Scripts\angular-messages.min.js.map" />
     <Content Include="Scripts\angular-cookies.min.js.map" />
     <Content Include="Scripts\angular-chart.min.js.map" />
-    <Content Include="Scripts\app\app.allert.js" />
+    <Content Include="Scripts\app\app.alert.js" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -286,6 +278,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

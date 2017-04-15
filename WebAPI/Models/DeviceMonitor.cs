@@ -39,13 +39,33 @@ namespace WebAPI.Models
             ValueType = valueType;
             Measure = measure;
         }
-
+    }
+    public class MyList
+    {
+        public int ID;
+        public string Name;
+        public MyList(int id, string name)
+        {
+            ID = id;
+            Name = name;
+        }
+    }
+    public class MonitoringList
+    {
+        public string listName;
+        public List<MyList> monitoringList;// = new List<MonitoringResults>();
+        public MonitoringList(string name, List<MyList> results)
+        {
+            listName = name;
+            monitoringList = results;
+        }
     }
 
     public class DeviceMonitor : Device
     {
         public List<MonitoringResults> monitoringResults = new List<MonitoringResults>();
         public List<MonitoringResults> monitoringProperties = new List<MonitoringResults>();
+        public List<MonitoringList> monitoringList = new List<MonitoringList>();
         public string TypeName;
         SimpleSnmp snmp;
         //is null into json?
@@ -77,7 +97,7 @@ namespace WebAPI.Models
 
         public void CheckConditions(int UserId)
         {
-            var allert = new Allert();
+            var allert = new Alert();
             allert.UserID = UserId;
             allert.MessageDate = DateTime.Now;
             allert.isRead = false;
@@ -89,7 +109,7 @@ namespace WebAPI.Models
                 {
                     allert.Message = monitoringResult.Explanation;
                     allert.Header = string.Format("{0} [{1}]", DeviceName, DeviceIP);
-                    db.Allerts.Add(allert);
+                    db.Alerts.Add(allert);
                     /*if(monitoringResult.Notification)
                     {
                         //send to email
@@ -242,6 +262,18 @@ namespace WebAPI.Models
             var result = snmp.GetNext(SnmpVersion.Ver2, pdu);
             return result.First().Value.ToString();
         }
+        private List<MyList> SNMPWalk(string OID)
+        {
+            Dictionary<Oid, AsnType> result = snmp.Walk(SnmpVersion.Ver2, OID);
+            List<MyList> monitoringList = new List<MyList>();
+            int i = 0;
+            foreach (KeyValuePair<Oid, AsnType> kvp in result)
+            {
+                monitoringList.Add(new MyList(++i,kvp.Value.ToString().Trim()));
+            }
+            return monitoringList;
+        }
+
         private void AddToList(List<MonitoringResults> MyListResult, MonitoringResults MyResult)
         {
                 MyListResult.Add(MyResult);
@@ -255,8 +287,7 @@ namespace WebAPI.Models
                 {
                     return;
                 }
-                monitoringData = monitoringData.Where(x => x.ValueType != "list").ToArray();
-                //monitoringResults = new MonitoringResults[monitoringData.Length];
+                //monitoringData = monitoringData.Where(x => x.ValueType != "list").ToArray();
                 for (int i = 0; i < monitoringData.Length; i++)
                 {
                     switch (monitoringData[i].ValueType)
@@ -272,6 +303,9 @@ namespace WebAPI.Models
                                 AddToList(monitoringProperties, new MonitoringResults(monitoringData[i].Name, this.CaclculateComplexOID(monitoringData[i].OID), monitoringData[i].ValueType, monitoringData[i].Measure));
                             else
                                 AddToList(monitoringProperties, new MonitoringResults(monitoringData[i].Name, this.SNMPGet(monitoringData[i].OID), monitoringData[i].ValueType, monitoringData[i].Measure));
+                            break;
+                        case "list":
+                            monitoringList.Add(new MonitoringList(monitoringData[i].Name, SNMPWalk(monitoringData[i].OID)));
                             break;
                         default:
                             break;

@@ -12,7 +12,7 @@ namespace WebAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Allert
+    public partial class Alert
     {
         public int ID { get; set; }
         public int UserID { get; set; }
