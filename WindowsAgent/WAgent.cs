@@ -34,15 +34,17 @@ namespace WindowsAgent
         /// </summary>
         protected override void OnStop()
         {
-            handler.Shutdown(SocketShutdown.Both);
-            handler.Close();
+
         }
 
         private void ListenPorts()
         {
-
-            IPHostEntry ipHost = Dns.GetHostEntry("192.168.1.5");
-            var myIP = ipHost.AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork && x.ToString() == "192.168.1.5").ToList().First();
+            Microsoft.Win32.RegistryKey key = Microsoft.Win32.RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, Microsoft.Win32.RegistryView.Registry64);
+            key = key.OpenSubKey("Software\\AgentMonitoring\\");
+            string IPListener = key.GetValue("IPListener").ToString();
+            key.Close();
+            IPHostEntry ipHost = Dns.GetHostEntry(IPListener);
+            var myIP = ipHost.AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork && x.ToString() == IPListener).ToList().First();
             IPEndPoint ipEndPoint = new IPEndPoint(myIP, 11000);
             Socket sListener = new Socket(myIP.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             // Назначаем сокет локальной конечной точке и слушаем входящие сокеты
@@ -71,6 +73,8 @@ namespace WindowsAgent
                     //Отправляем
                     byte[] msg = Encoding.UTF8.GetBytes(reply);
                     handler.Send(msg);
+                    handler.Shutdown(SocketShutdown.Both);
+                    handler.Close();
                 }
             }
             catch (Exception ex)

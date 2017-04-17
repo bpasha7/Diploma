@@ -55,11 +55,9 @@ namespace WindowsAgent
                     catch (Exception ex)
                     {
                         listInfo.Add(new Info(WMIClassProperties[i], null));
-
                         continue;
                     }
                 }
-                listInfo.Add(new Info("name", item["CSName"].ToString()));
             }
         }
     }

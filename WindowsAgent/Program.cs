@@ -34,16 +34,20 @@ namespace WindowsAgent
                                 case "-install":
                                     {
                                         ManagedInstallerClass.InstallHelper(new string[] { Assembly.GetExecutingAssembly().Location });
-                                        Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("Software", true);
-                                        key.CreateSubKey("AgentMonitoring");
-                                        key = key.OpenSubKey("AgentMonitoring", true);
-                                        key.SetValue("IPListener", args[1]);
-                                        Console.WriteLine(string.Format("Установка, мой IP {0}", args[1]));
+                                        Microsoft.Win32.RegistryKey key = Microsoft.Win32.RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, Microsoft.Win32.RegistryView.Registry64);
+                                        key.CreateSubKey("Software\\AgentMonitoring");
+                                        key = key.OpenSubKey("Software\\AgentMonitoring", true);
+                                        key.SetValue("IPListener", args[1], Microsoft.Win32.RegistryValueKind.String);
+                                        key.Close();
                                         break;
                                     }
                                 case "-uninstall":
                                     {
                                         ManagedInstallerClass.InstallHelper(new string[] { "/u", Assembly.GetExecutingAssembly().Location });
+                                        Microsoft.Win32.RegistryKey key = Microsoft.Win32.RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, Microsoft.Win32.RegistryView.Registry64);
+                                        key.DeleteSubKey("Software\\AgentMonitoring");
+                                        key.DeleteValue("IPListener");
+                                        key.Close();
                                         break;
                                     }
                                 default: break;
@@ -51,7 +55,7 @@ namespace WindowsAgent
                     }
                     catch (Exception ex)
                     {
-
+                        Console.WriteLine(ex.Message.ToString());
                     }
                 }
             }
