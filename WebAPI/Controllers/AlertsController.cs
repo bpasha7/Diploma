@@ -17,28 +17,40 @@ namespace WebAPI.Controllers
     {
         private monitoringEntities db = new monitoringEntities();
 
-      /*  [HttpPut]
-        [Route("api/Allerts/read")]
-        public string GetMonitoringData([FromUri]int id, [FromUri]int userId)
+        /*  [HttpPut]
+          [Route("api/Allerts/read")]
+          public string GetMonitoringData([FromUri]int id, [FromUri]int userId)
+          {
+              ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
+              // var r = JObject.Parse(viewDevice.OIDS).ToObject<DeviceMonitor[]>();
+              string oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
+              MonitoringData[] monitoringData = Newtonsoft.Json.JsonConvert.DeserializeObject<MonitoringData[]>(oidsArray);
+              DeviceMonitor deviceMonitor = new DeviceMonitor(viewDevice);
+              deviceMonitor.Run(monitoringData);
+              deviceMonitor.CheckConditions(userId);
+
+              return deviceMonitor.ToJSON();
+
+
+          }*/
+
+        //GET: api/Allerts/Count/User
+        [HttpGet]
+        [Route("api/Alerts/Count")]
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> GetCountUserAlerts([FromUri]int UserId)
         {
-            ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
-            // var r = JObject.Parse(viewDevice.OIDS).ToObject<DeviceMonitor[]>();
-            string oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
-            MonitoringData[] monitoringData = Newtonsoft.Json.JsonConvert.DeserializeObject<MonitoringData[]>(oidsArray);
-            DeviceMonitor deviceMonitor = new DeviceMonitor(viewDevice);
-            deviceMonitor.Run(monitoringData);
-            deviceMonitor.CheckConditions(userId);
-
-            return deviceMonitor.ToJSON();
-
-
-        }*/
-
+            int count = 0;
+            await Task.Run(() =>
+                count = db.Alerts.Where(x => x.UserID == UserId && x.isRead == false).Count()
+            );
+            return Ok(count);
+        }
 
         // GET: api/Allerts
         public IQueryable<Alert> GetAllerts([FromUri]int UserId)
         {
-            return db.Alerts.Where(a=> (a.UserID == UserId) && (a.isRead == false)).OrderByDescending(a=> a.MessageDate);
+            return db.Alerts.Where(a => (a.UserID == UserId) && (a.isRead == false)).OrderByDescending(a => a.MessageDate);
         }
 
         // GET: api/Allerts/5
@@ -63,10 +75,10 @@ namespace WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-           /* if (id != allert.ID)
-            {
-                return BadRequest();
-            }*/
+            /* if (id != allert.ID)
+             {
+                 return BadRequest();
+             }*/
 
             db.Entry(alert).State = EntityState.Modified;
 

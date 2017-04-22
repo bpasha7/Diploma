@@ -1,24 +1,19 @@
 ﻿angular
     .module('MyApp')
-    .service('DeviceService', function ($http) {
-        //поправить имена функций
+    .service('DeviceService', function ($http, $log) {
+        //Получение данных мониторинга для пользователя по id устройства
         this.GetDeviceSNMPData = function (id, userId) {
             return $http.get("/api/Device/snmp?id=" + id + "&userId=" + userId)
-        .then(getDeviceComplete)
-        .catch(getDeviceFailed);
+        .then(getComplete)
+        .catch(getFailed);
 
-            function getDeviceComplete(data, status, headers, config) {
+            function getComplete(data) {
                 return data.data;
             }
 
-            function getDeviceFailed(e) {
-                var newMessage = 'XHR Failed for GetDeviceSNMPData'
-                if (e.data && e.data.description) {
-                    newMessage = newMessage + '\n' + e.data.description;
-                }
-                e.data.description = newMessage;
-                logger.error(newMessage);
-                return $q.reject(e);
+            function getFailed(e) {
+                $log.error('Failed for GetDeviceSNMPData');
+                return null;
             }
         }
     });
@@ -26,13 +21,9 @@
 class MonitoringChart {
     constructor() {
         this.labels = [];
-        //this.series = null;
         this.data = [[]];
         this.datasetOverride = [{ yAxisID: 'y-axis-1' }];
-        //this.colors = ['#ff6384'];
         this.options = {
-            //elements: { point: { radius: 0.8 } },
-            //spanGaps: false,
             scales: {
                 yAxes: [
                   {
@@ -95,11 +86,18 @@ angular.module('MyApp').controller('DeviceController', function ($cookies, $scop
     self.Refresh = function () {
         if (self.UserId != null)
             DeviceService.GetDeviceSNMPData(self.id, self.UserId).then(function (result) {
-                self.DeviceSNMP = angular.fromJson(result);
-                self.ProgressLinear = 0;
-                self.timeLeft = 0;
+                if (result != null) {
+                    self.DeviceSNMP = result;
+                    self.ProgressLinear = 0;
+                    self.timeLeft = 0;
+                    return 1;
+                }
+                else
+                    return null;
             })
-        .then(function () {
+        .then(function (result) {
+            if (result == null)
+                return;
             self.UpdateMonitoingCharts();
             self.UpdateMonitoringProperies();
             //self.UpdateMonitoringLists();

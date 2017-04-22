@@ -34,6 +34,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <IncludeIisSettings>true</IncludeIisSettings>
+    <PublishDatabaseSettings>
+      <Objects>
+      </Objects>
+    </PublishDatabaseSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -123,7 +127,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="alerts.html" />
+    <Content Include="public\views\alerts.html" />
     <Content Include="Content\angular-material.css" />
     <Content Include="Content\angular-material.layout-attributes.css" />
     <Content Include="Content\angular-material.layout-attributes.min.css" />
@@ -133,8 +137,8 @@
     <Content Include="Content\angular-material.min.css" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
-    <Content Include="login.html" />
-    <Content Include="main.html" />
+    <Content Include="public\views\login.html" />
+    <Content Include="public\views\main.html" />
     <Content Include="Models\ModelDB.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ModelDB.edmx</DependentUpon>
@@ -145,11 +149,22 @@
       <DependentUpon>ModelDB.edmx</DependentUpon>
       <LastGenOutput>ModelDB.cs</LastGenOutput>
     </Content>
-    <Content Include="monitor.html" />
+    <Content Include="public\images\back.svg" />
+    <Content Include="public\images\bell.svg" />
+    <Content Include="public\images\close.svg" />
+    <Content Include="public\images\date.svg" />
+    <Content Include="public\images\dustbin.svg" />
     <Content Include="public\images\eye.png" />
+    <Content Include="public\images\internet.svg" />
+    <Content Include="public\images\key.svg" />
+    <Content Include="public\images\more.svg" />
     <Content Include="public\images\pc.png" />
     <Content Include="public\images\printer.png" />
     <Content Include="public\images\router.png" />
+    <Content Include="public\images\russia.svg" />
+    <Content Include="public\images\uk.svg" />
+    <Content Include="public\images\user.svg" />
+    <Content Include="public\images\warning.svg" />
     <Content Include="public\Styles\DeviceFormEdit.css" />
     <Content Include="public\Styles\login.css" />
     <Content Include="public\Styles\Menu.css" />
@@ -169,7 +184,7 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
-    <Content Include="device.html" />
+    <Content Include="public\views\device.html" />
     <Content Include="Scripts\angular-animate\angular-animate.js" />
     <Content Include="Scripts\angular-animate\angular-animate.min.js" />
     <Content Include="Scripts\angular-aria\angular-aria.js" />
@@ -185,15 +200,17 @@
     <Content Include="Scripts\angular\angular.min.js" />
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\app\app.languages.js" />
+    <Content Include="Scripts\svg-assets-cache.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\AllertsController.cs" />
+    <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\DevicesController.cs" />
     <Compile Include="Controllers\DeviceTypesController.cs" />
+    <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\MonitorController.cs" />
     <Compile Include="Controllers\MonitoringEventsController.cs" />
     <Compile Include="Controllers\OIDsController.cs" />
@@ -238,6 +255,12 @@
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Parser.cs" />
+    <Compile Include="Models\Setting.cs">
+      <DependentUpon>ModelDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sysdiagram.cs">
+      <DependentUpon>ModelDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\User.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
@@ -258,6 +281,10 @@
     <Content Include="Scripts\angular-animate\angular-animate.min.js.map" />
     <Content Include="Scripts\angular\angular.min.js.map" />
     <Content Include="Scripts\angular\angular-route.min.js.map" />
+    <Content Include="Scripts\angular-messages.min.js.map" />
+    <Content Include="Scripts\angular-cookies.min.js.map" />
+    <Content Include="Scripts\angular-chart.min.js.map" />
+    <Content Include="Scripts\app\app.alert.js" />
     <EntityDeploy Include="Models\ModelDB.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ModelDB.Designer.cs</LastGenOutput>
@@ -265,10 +292,7 @@
     <Content Include="Models\ModelDB.edmx.diagram">
       <DependentUpon>ModelDB.edmx</DependentUpon>
     </Content>
-    <Content Include="Scripts\angular-messages.min.js.map" />
-    <Content Include="Scripts\angular-cookies.min.js.map" />
-    <Content Include="Scripts\angular-chart.min.js.map" />
-    <Content Include="Scripts\app\app.alert.js" />
+    <None Include="Properties\PublishProfiles\moni.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -278,7 +302,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -26,20 +26,60 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("api/Device/snmp")]
-        public string GetMonitoringData([FromUri]int id, [FromUri]int userId)
+        [ResponseType(typeof(DeviceMonitor))]
+        public async Task<IHttpActionResult> GetMonitoringData([FromUri]int id, [FromUri]int userId)
         {
-            ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
-            // var r = JObject.Parse(viewDevice.OIDS).ToObject<DeviceMonitor[]>();
-            string oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
+            DeviceMonitor deviceMonitor = null;
+            await Task.Run(() =>
+              deviceMonitor = CreateDeviceMonitor(id, userId)
+            );
+            if (deviceMonitor == null)
+            {
+                return NotFound();
+            }
+            return Ok(deviceMonitor);
+            /* ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
+            var oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
             MonitoringData[] monitoringData = Newtonsoft.Json.JsonConvert.DeserializeObject<MonitoringData[]>(oidsArray);
             DeviceMonitor deviceMonitor = new DeviceMonitor(viewDevice);
             deviceMonitor.Run(monitoringData);
             deviceMonitor.CheckConditions(userId);
+            return deviceMonitor.ToJSON();*/
+        }
 
-            return deviceMonitor.ToJSON();
+        private DeviceMonitor CreateDeviceMonitor(int id, int userId)
+        {
+            try
+            {
+                ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
+                var oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
+                MonitoringData[] monitoringData = Newtonsoft.Json.JsonConvert.DeserializeObject<MonitoringData[]>(oidsArray);
+                DeviceMonitor deviceMonitor = new DeviceMonitor(viewDevice);
+                deviceMonitor.Run(monitoringData);
+                deviceMonitor.CheckConditions(userId);
+                return deviceMonitor;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
 
-
-        } 
+        [HttpGet]
+        [Route("api/ViewDevices/group")]
+        [ResponseType(typeof(ViewDevice))]
+        public async Task<IHttpActionResult> GetViewDeviceByUserGroup([FromUri]int GroupId)
+        {
+            var viewDevices = new List<ViewDevice>();
+            await Task.Run(() =>
+              viewDevices =  db.ViewDevices.Where(x => x.DeviceGroup == GroupId).ToList()
+            );
+            if (viewDevices == null)
+            {
+                return NotFound();
+            }
+            return Ok(viewDevices);
+        }
 
         // GET: api/ViewDevices/5
         [ResponseType(typeof(ViewDevice))]

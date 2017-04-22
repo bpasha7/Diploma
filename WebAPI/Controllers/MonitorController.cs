@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
             try
             {
                 //Data Source=ISUS;Initial Catalog=monitoring;Integrated Security=True
-                SqlConnection sqlConnection1 = new SqlConnection("Data Source=ISUS;Initial Catalog=monitoring;Integrated Security=True");
+                SqlConnection sqlConnection1 = new SqlConnection("Data Source=ISUS;Initial Catalog=monitoring;Integrated Security=True;User ID=adm;Password=12345");
                 SqlCommand cmd = new SqlCommand();
                 SqlDataReader reader;
 

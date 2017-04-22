@@ -3,27 +3,22 @@ angular.module('MyApp').controller('DialogController', DialogController);
 
 angular
     .module('MyApp')
-    .service('AlertService', function ($http, $cookies) {
+    .service('AlertService', function ($http, $cookies, $log) {
+        var UserId = $cookies.get('userId');
         //поправить имена функций
+        var functionName;
+        //Првоерить оповешения пользователя
+        this.AlertsCount = function () {
+            functionName = "AlertsCount";
+            return $http.get("api/Alerts/Count?UserId=" + UserId)
+                .then(getComplete)
+                .catch(getFailed);
+        }
         this.GetAlerts = function () {
-            var UserId = $cookies.get('userId');
+            functionName = "GetAlerts";
             return $http.get("/api/Alerts?UserId=" + UserId)
-        .then(getAlertsComplete)
-        .catch(getAlertsFailed);
-
-            function getAlertsComplete(data, status, headers, config) {
-                return data.data;
-            }
-
-            function getAlertsFailed(e) {
-                var newMessage = 'XHR Failed for GetDeviceSNMPData'
-                if (e.data && e.data.description) {
-                    newMessage = newMessage + '\n' + e.data.description;
-                }
-                e.data.description = newMessage;
-                logger.error(newMessage);
-                return $q.reject(e);
-            }
+        .then(getComplete)
+        .catch(getFailed);
         }
         this.SetRead = function (msg) {
             return $http({
@@ -38,9 +33,18 @@ angular
                 // or server returns response with an error status.
             });
         }
+
+        function getComplete(data) {
+            return data.data;
+        }
+
+        function getFailed(e) {
+            $log.error('Failed for MonitorService' + functionName);
+            return null;
+        }
     });
 
-function MenuAlertController($mdPanel) {
+function MenuAlertController($mdPanel, AlertService) {
     var self = this;
     self._mdPanel = $mdPanel;
     self.duration = 300;
@@ -73,7 +77,7 @@ MenuAlertController.prototype.ShowDialog = function () {
         attachTo: angular.element(document.body),
         controller: DialogController,
         controllerAs: 'Ctrl',
-        templateUrl: 'alerts.html',
+        templateUrl: 'public\\views\\alerts.html',
         panelClass: 'demo-dialog-example',
         position: position,
         trapFocus: true,

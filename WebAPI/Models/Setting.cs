@@ -12,15 +12,10 @@ namespace WebAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ViewDevice
+    public partial class Setting
     {
-        public int DeviceID { get; set; }
-        public Nullable<int> DeviceType { get; set; }
-        public string DeviceCommunity { get; set; }
-        public int DeviceGroup { get; set; }
-        public string TypeName { get; set; }
-        public string DeviceIP { get; set; }
-        public string DeviceName { get; set; }
-        public string OIDS { get; set; }
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }

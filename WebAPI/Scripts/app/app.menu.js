@@ -22,9 +22,17 @@
 
 });
 
-angular.module('MyApp').controller('MonitoringMenuController', function ($location, $translate) {
+angular.module('MyApp').controller('MonitoringMenuController', function ($location, $translate, AlertService) {
     var self = this;
     self.selectedMode = 'md-fling';
+
+    self.AlertsCount = 0;
+    AlertService.AlertsCount()
+             .then(function (result) {
+                 if (result == null)
+                     self.AlertsCount = 0;
+                 self.AlertsCount = result;
+             });
     self.changeLanguage = function (langKey) {
         $translate.use(langKey);
     };

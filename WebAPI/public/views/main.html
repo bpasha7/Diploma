@@ -3,29 +3,57 @@
         <md-tabs md-dynamic-height="" md-border-bottom="">
             <md-tab label="{{'MENU_MONITOR' | translate }}">
                 <md-content class="md-padding">
-                    <md-content class="md-padding">
-                        <div class="map" ng-controller="MonitorCtrl">
-                            <md-card style="border-radius: 3px; width:150px; height:120px; display: inline-block" ng-repeat="x in Devices">
-                                <md-card-title style="padding-top: 0px;padding-right: 10px;padding-bottom: 8px;padding-left: 10px;">
-                                    <md-card-title-text>
-                                        <span class="md-headline" style="text-align: center;font-size: 18px;">{{ x.DeviceIP }}</span>
-                                    </md-card-title-text>
-                                </md-card-title>
-                                <md-card-content style="top: -30px; position: relative;">
-                                    <img class="imgCard" ng-src="/public/images/pc.png" style="position: relative; height: 95px; width: 95px; top: 10px;" />
+                    <md-content class="md-padding" ng-controller="MonitorController as Monitor">
+                        <md-card style="border-radius: 3px; width:450px; height:90px;">
+                            <md-card-title layout="row" style="padding-top: 0px;padding-right: 10px;padding-bottom: 8px;padding-left: 10px;">
+                                <md-card-title-text>
+                                    <span class="md-headline" style="font-size: 18px;">Панель управления</span>
+                                </md-card-title-text>
+                            </md-card-title>
+                            <md-card-content layout="row" style="">
+                                <md-input-container style="width: 100px;">
+                                    <label>{{'DEVICE_MONITOR_LABEL_DURATION' | translate }}</label>
+                                    <input type="number"
+                                           ng-model="Monitor.Period" style="width: 50px;">
+                                </md-input-container>
 
-                                    <md-card-actions layout="column" style="position: relative; top: -90px; left: 85px;
+                                    <md-input-container>
+                                        <label>Группа</label>
+                                        <md-select ng-model="Monitor.group" ng-change="Monitor.NewGroupSelected()" placeholder="Группы" md-on-open="Monitor.getList()" style="min-width: 200px;">
+                                            <md-option ng-repeat="item in Monitor.MyGroups" ng-value="item.GroupId">{{item.GroupName}}</md-option>
+                                        </md-select>
+                                    </md-input-container>
+                                <md-input-container>
+                                    <md-button ng-if="!Monitor.isRun" ng-click="Monitor.startMonitoring()">{{'DEVICE_MONITOR_BUTTON_START' | translate }}</md-button>
+                                    <md-button ng-if="Monitor.isRun" ng-click="Monitor.stopMonitoring()">{{'DEVICE_MONITOR_BUTTON_STOP' | translate }}</md-button>
+                            </md-card-content>
+                        </md-card>
+                        <div>
+                            <md-progress-linear md-mode="determinate" value="{{Monitor.ProgressLinear}}" style="margin-top: 2px;"></md-progress-linear>
+                            <div class="map">
+                                <md-card style="border-radius: 3px; width:150px; height:120px; display: inline-block" ng-repeat="x in Monitor.Devices">
+                                    <md-card-title style="padding-top: 0px;padding-right: 10px;padding-bottom: 8px;padding-left: 10px;">
+                                        <md-card-title-text>
+                                            <span class="md-headline" style="text-align: center;font-size: 18px;">{{ x.DeviceIP }}</span>
+                                        </md-card-title-text>
+                                    </md-card-title>
+                                    <md-card-content style="top: -30px; position: relative;">
+                                        <img ng-if="x.DeviceType==2" class="imgCard" ng-src="/public/images/pc.png" style="position: relative; height: 95px; width: 95px; top: 10px;" />
+                                        <img ng-if="x.DeviceType==1" class="imgCard" ng-src="/public/images/printer.png" style="position: relative; height: 95px; width: 95px; top: 10px;" />
+                                        <img ng-if="x.DeviceType==3" class="imgCard" ng-src="/public/images/router.png" style="position: relative; height: 95px; width: 95px; top: 10px;" />
+                                        <md-card-actions layout="column" style="position: relative; top: -90px; left: 85px;
 ">
-                                        <md-button class="md-icon-button" aria-label="Settings" style="margin: 0px;padding: 0px;">
-                                            <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
-                                        </md-button>
-                                        <md-button class="md-icon-button" aria-label="Share" style="margin: 0px;padding: 0px;">
-                                            <a ng-href="#/device/{{ x.DeviceID }}"><md-icon md-svg-icon="img/icons/share-arrow.svg"></md-icon></a>
-                                        </md-button>
-                                    </md-card-actions>
-                                </md-card-content>
-                            </md-card>
+                                            <md-button class="md-icon-button" aria-label="Settings" style="margin: 0px;padding: 0px;">
+                                                <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+                                            </md-button>
+                                            <md-button class="md-icon-button" aria-label="Share" style="margin: 0px;padding: 0px;">
+                                                <a ng-href="#/device/{{ x.DeviceID }}"><md-icon md-svg-icon="img/icons/share-arrow.svg"></md-icon></a>
+                                            </md-button>
+                                        </md-card-actions>
+                                    </md-card-content>
+                                </md-card>
 
+                            </div>
                         </div>
                     </md-content>
                 </md-content>
@@ -106,7 +134,7 @@
                                         <input value="{{oid.name}}" disabled>
                                     </md-input-container>
 
-                                    <md-input-container ng-if="oid.Type == 'int'">
+                                    <md-input-container ng-if="oid.Type == 'numeric'">
                                         <label>{{'DEVICE_FORM_CONDOTIONS' | translate }}</label>
                                         <input ng-model="oid.Conditions">
                                     </md-input-container>
@@ -124,7 +152,7 @@
                     </div>
                 </md-content>
             </md-tab>
-            <md-tab label="{{'MENU_SETTINGS' | translate }}">
+            <md-tab label="{{'MENU_PARAM' | translate }}">
                 <md-content class="md-padding">
                     <div class="inset switchdemoBasicUsage" ng-controller="SwitchDemoCtrl" ng-cloak="" ng-app="MyApp">
                         <md-switch ng-model="data.cb1" aria-label="Switch 1">

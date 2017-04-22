@@ -7,27 +7,29 @@
             </md-button>
         </div>
     </md-toolbar>
-    <div class="alert-dialog-content">
+    <div class="alert-dialog-content">  
+          
             <md-list flex="" style="width: 450px; height: auto; max-height: 350px; overflow: auto;">
+                <p style="text-align:center" ng-if="!Ctrl.HasAlerts()"> No alerts</p>  
                 <md-list-item class="md-2-line" ng-click="null" ng-repeat="alert in Ctrl.Alerts">
                     <img ng-src="public/images/warning.svg" class="md-avatar" alt="">
                     <div class="md-list-item-text" layout="column">
                         <h3>{{alert.Header}}</h3>
                         <p>{{alert.Message}}</p>
                     </div>
-                    <md-button class="md-secondary md-icon-button" >
+                    <md-button class="md-secondary md-icon-button">
                         <md-tooltip md-direction="left" md-z-index="160">{{alert.MessageDate}}</md-tooltip><!---->
-                        <md-icon md-svg-icon="public/images/date.svg"></md-icon> 
+                        <md-icon md-svg-icon="public/images/date.svg"></md-icon>
                     </md-button>
                     <md-button class="md-secondary md-icon-button" ng-click="Ctrl.Read(alert.ID)">
                         <md-icon md-svg-icon="public/images/dustbin.svg"></md-icon>
                     </md-button>
                 </md-list-item>
             </md-list>
-        <div class="alert-dialog-button">
-            <md-button layout="column"  class="md-primary" ng-if="Ctrl.HasAlerts()" style="float:right;">
-                {{'ALERT_DIALOG_CLEAR' | translate }}
-            </md-button>
-        </div>
-    </div>
+            <div class="alert-dialog-button">
+                <md-button layout="column" class="md-primary" ng-if="Ctrl.HasAlerts()" style="float:right;">
+                    {{'ALERT_DIALOG_CLEAR' | translate }}
+                </md-button>
+            </div>
+</div>
 </div>

@@ -4,21 +4,16 @@
         //поправить имена функций
         this.GetUserID = function (email, password) {
             return $http.get("api/user/login?email=" + email + "&password=" + password)
-        .then(getUserIDComplete)
-        .catch(getUserIDFailed);
+        .then(getComplete)
+        .catch(getFailed);
 
-            function getUserIDComplete(data, status, headers, config) {
+            function getComplete(data) {
                 return data.data;
             }
 
-            function getUserIDFailed(e) {
-                var newMessage = 'XHR Failed for getUserID'
-                if (e.data && e.data.description) {
-                    newMessage = newMessage + '\n' + e.data.description;
-                }
-                e.data.description = newMessage;
-                logger.error(newMessage);
-                return $q.reject(e);
+            function getFailed(e) {
+                $log.error('Failed for LoginService');
+                return null;
             }
         }
     });

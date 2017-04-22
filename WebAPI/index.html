@@ -17,15 +17,31 @@
 </head>
 
 <style>
-
     .map{
-        width: 96%;
-        height: 40% auto;
         background: #edeef0;
         position: relative;
-        margin: 2%;
-        /*display: none;*/
+        overflow:hidden;
     }
+html {
+    position:relative;
+    min-height: 100%;
+}
+/*Normalize html and body elements,this style is just good to have*/
+ html, body {
+    margin:0;
+    padding:0;
+}
+.pageContentWrapper {
+    margin-bottom:40px;
+    /* Height of footer*/
+}
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height:40px;
+}
 </style>
 <!-- Angular Material requires Angular.js Libraries -->
 <script src="/Scripts/angular/angular.js"></script>
@@ -68,17 +84,20 @@
 
 
 <body>
+    <div class="pageContentWrapper">
+        <md-toolbar class="md-hue-2" ng-controller="MonitoringMenuController as MonitoringMenu">
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" aria-label="Settings" ng-click="MonitoringMenu.goMenu()">
+                    <md-icon md-svg-icon="public/images/back.svg"></md-icon>
+                </md-button>
 
-    <md-toolbar class="md-hue-2" ng-controller="MonitoringMenuController as MonitoringMenu">
-        <div class="md-toolbar-tools">
-            <md-button class="md-icon-button" aria-label="Settings" ng-click="MonitoringMenu.goMenu()">
-                <md-icon md-svg-icon="public/images/back.svg" ></md-icon>
-            </md-button>
+                <h2 flex="" md-truncate="">{{'HEADLINE' | translate }}</h2>
 
-            <h2 flex="" md-truncate="" >{{'HEADLINE' | translate }}</h2>
-
-                <md-button class="animation-target md-icon-button" ng-controller="MenuAlertController as MenuAllert" ng-click="MenuAllert.ShowDialog($event)">
-                    <md-icon md-svg-icon="public/images/bell.svg"></md-icon><span style="background:red; display: block; position: relative; top: -25px; left: 12px; height: 17px; width:17px; border-radius:17px;"><div style="position: relative; top: -2.8px;font-size: 10pt;">8</div></span>
+                <md-button class="animation-target md-icon-button" ng-controller="MenuAlertController as MenuAlert" ng-click="MenuAlert.ShowDialog($event)">
+                   <md-icon md-svg-icon="public/images/bell.svg"></md-icon>
+                    <span ng-if="MonitoringMenu.AlertsCount>0" style="background:red; display: block; position: relative; top: -25px; left: 12px; height: 17px; width:17px; border-radius:17px;">
+                        <div style="position: relative; top: -2.8px;font-size: 10pt;">{{MonitoringMenu.AlertsCount}}</div>
+                    </span>
                 </md-button>
 
                 <md-menu md-offset="0 50" ng-controller="UserMenuController as UserMenu">
@@ -99,7 +118,7 @@
                         </md-menu-item>
                         <md-divider></md-divider>
                         <md-menu-item ng-click="UserMenu.LogOut()" ng-if="UserMenu.isLogined()">
-                            <md-button> <span md-menu-align-target="" >Выйти</span></md-button>
+                            <md-button> <span md-menu-align-target="">Выйти</span></md-button>
                         </md-menu-item>
                     </md-menu-content>
                 </md-menu>
@@ -128,10 +147,17 @@
                         </md-button>
                     </md-fab-actions>
                 </md-fab-speed-dial>
-</div>
-    </md-toolbar>
-    <ng-view>
-        
-    </ng-view>
+            </div>
+        </md-toolbar>
+        <ng-view>
+
+        </ng-view>
+    </div>
+    <footer>
+        <md-divider></md-divider>
+        <div style="text-align:center">
+            <p style="color:rgba(0, 0, 0, 0.54); font-size:small">Powered by Angular JS. Uses ASP.NET WEB API 2. &copy;<a style="text-decoration: none; color:navy" href="https://github.com/bpasha7">bpasha7</a> 2017.</p>
+        </div>
+    </footer>
 </body>
 </html>
