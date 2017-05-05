@@ -21,5 +21,7 @@ namespace WebAPI.Models
         public string ValueType { get; set; }
         public string Commentary { get; set; }
         public string Measure { get; set; }
+    
+        public virtual DeviceType DeviceType1 { get; set; }
     }
 }

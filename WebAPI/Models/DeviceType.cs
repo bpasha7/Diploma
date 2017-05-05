@@ -14,7 +14,19 @@ namespace WebAPI.Models
     
     public partial class DeviceType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public DeviceType()
+        {
+            this.Devices = new HashSet<Device>();
+            this.OIDs = new HashSet<OID>();
+        }
+    
         public int TypeID { get; set; }
         public string TypeName { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Device> Devices { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OID> OIDs { get; set; }
     }
 }

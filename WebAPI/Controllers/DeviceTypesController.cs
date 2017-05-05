@@ -18,9 +18,28 @@ namespace WebAPI.Controllers
         private monitoringEntities db = new monitoringEntities();
 
         // GET: api/DeviceTypes
-        public IQueryable<DeviceType> GetDeviceTypes()
+        [HttpGet]
+        [Route("api/DeviceTypes")]
+        [ResponseType(typeof(DeviceType))]
+        public async Task<IHttpActionResult> GetDeviceTypes()
         {
-            return db.DeviceTypes;
+
+            List<DeviceType> types = null;
+            await Task.Run(() =>
+                    types = db.DeviceTypes.ToList()
+                );
+            if (types == null)
+            {
+                return NotFound();
+            }
+            else
+            { var Types = new List<AngularDeviceType>();
+                foreach (var item in types)
+                {
+                    Types.Add(new AngularDeviceType(item));
+                }
+                return Ok(Types);
+            }
         }
 
         // GET: api/DeviceTypes/5

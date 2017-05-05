@@ -168,6 +168,7 @@
     <Content Include="public\Styles\DeviceFormEdit.css" />
     <Content Include="public\Styles\login.css" />
     <Content Include="public\Styles\Menu.css" />
+    <Content Include="public\views\settings.html" />
     <Content Include="Scripts\angular-chart.js" />
     <Content Include="Scripts\angular-chart.min.js" />
     <Content Include="Scripts\angular-cookies.js" />
@@ -211,7 +212,6 @@
     <Compile Include="Controllers\DevicesController.cs" />
     <Compile Include="Controllers\DeviceTypesController.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
-    <Compile Include="Controllers\MonitorController.cs" />
     <Compile Include="Controllers\MonitoringEventsController.cs" />
     <Compile Include="Controllers\OIDsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -222,6 +222,7 @@
     <Compile Include="Models\Alert.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AngularClasses.cs" />
     <Compile Include="Models\Device.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
@@ -247,7 +248,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ModelDB.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\Monitor.cs" />
     <Compile Include="Models\MonitoringEvent.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
@@ -255,15 +255,10 @@
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Parser.cs" />
-    <Compile Include="Models\Setting.cs">
-      <DependentUpon>ModelDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>ModelDB.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\User.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Models\ViewDevice.cs">
       <DependentUpon>ModelDB.tt</DependentUpon>
     </Compile>
@@ -293,6 +288,7 @@
       <DependentUpon>ModelDB.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\moni.pubxml" />
+    <Content Include="Scripts\app\app.account.js" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

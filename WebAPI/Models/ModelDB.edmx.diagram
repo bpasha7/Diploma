@@ -4,17 +4,21 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="3e4f5b305ade4fa38ff609dd557b732f" Name="Diagram1">
-        <EntityTypeShape EntityType="monitoringModel.Alert" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="monitoringModel.Device" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="monitoringModel.DeviceType" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="monitoringModel.Group" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="monitoringModel.MonitoringEvent" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="monitoringModel.OID" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="monitoringModel.Setting" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="monitoringModel.sysdiagram" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="monitoringModel.User" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="monitoringModel.ViewDevice" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
+      <Diagram DiagramId="3e4f5b305ade4fa38ff609dd557b732f" Name="Diagram1" ZoomLevel="75">
+        <EntityTypeShape EntityType="monitoringModel.Alert" Width="1.5" PointX="3" PointY="1.5" />
+        <EntityTypeShape EntityType="monitoringModel.Device" Width="1.5" PointX="5.25" PointY="4.375" />
+        <EntityTypeShape EntityType="monitoringModel.DeviceType" Width="1.5" PointX="3" PointY="7.875" />
+        <EntityTypeShape EntityType="monitoringModel.Group" Width="1.5" PointX="3" PointY="4.875" />
+        <EntityTypeShape EntityType="monitoringModel.MonitoringEvent" Width="1.5" PointX="7.5" PointY="4.625" />
+        <EntityTypeShape EntityType="monitoringModel.OID" Width="1.5" PointX="5.25" PointY="8.5" />
+        <EntityTypeShape EntityType="monitoringModel.User" Width="1.5" PointX="0.75" PointY="3" />
+        <EntityTypeShape EntityType="monitoringModel.ViewDevice" Width="1.5" PointX="7.75" PointY="7.75" />
+        <AssociationConnector Association="monitoringModel.FK_Alerts_UserID" />
+        <AssociationConnector Association="monitoringModel.FK_Devices_DeviceGroup" />
+        <AssociationConnector Association="monitoringModel.FK_Devices_DeviceType" />
+        <AssociationConnector Association="monitoringModel.FK_MonitoringEvents_DeviceID" />
+        <AssociationConnector Association="monitoringModel.FK_OIDs_DeviceType" />
+        <AssociationConnector Association="monitoringModel.FK_Groups_UserID" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

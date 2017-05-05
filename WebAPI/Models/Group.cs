@@ -14,8 +14,18 @@ namespace WebAPI.Models
     
     public partial class Group
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Group()
+        {
+            this.Devices = new HashSet<Device>();
+        }
+    
         public int GroupId { get; set; }
         public string GroupName { get; set; }
         public Nullable<int> UserID { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Device> Devices { get; set; }
+        public virtual User User { get; set; }
     }
 }

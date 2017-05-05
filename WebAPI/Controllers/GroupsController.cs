@@ -24,19 +24,23 @@ namespace WebAPI.Controllers
         }
         //where user id = 
         // GET: api/Groups/5
-        [ResponseType(typeof(Group))]
+        [ResponseType(typeof(AngularGroup))]
         public async Task<IHttpActionResult> GetGroup(int id)
         {
             List<Group> groupsList = null;
             await Task.Run(() =>
-              groupsList = db.Groups.Where(x => x.UserID == id).ToList()
+              groupsList = db.Groups.Where(x => x.UserID == id).ToList()///Cast
             );
             if (groupsList == null)
             {
                 return NotFound();
             }
-
-            return Ok(groupsList);
+            var groups = new List<AngularGroup>();
+            foreach (var item in groupsList)
+            {
+                groups.Add(new AngularGroup(item));
+            }
+            return Ok(groups);
         }
 
         // PUT: api/Groups/5

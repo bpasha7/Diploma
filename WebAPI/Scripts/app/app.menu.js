@@ -6,6 +6,9 @@
     self.goLogin = function () {
         $location.url('/login');
     };
+    self.goSettings = function () {
+        $location.url('/settings');
+    }
     self.isLogined = function () {
         self.UserName = $cookies.get('UserName');
         if (self.UserName != null) {
@@ -16,8 +19,9 @@
     }
     self.LogOut = function () {
         $cookies.remove('UserName');
-        $cookies.remove('UserId');
+        $cookies.remove('userId');
         self.UserName = null;
+        $location.url('/login');
     }
 
 });

@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
 
           }*/
 
-        //GET: api/Allerts/Count/User
+        //GET: api/Alerts/Count/User
         [HttpGet]
         [Route("api/Alerts/Count")]
         [ResponseType(typeof(int))]
@@ -47,15 +47,31 @@ namespace WebAPI.Controllers
             return Ok(count);
         }
 
-        // GET: api/Allerts
-        public IQueryable<Alert> GetAllerts([FromUri]int UserId)
+        // GET: api/Alerts
+        [HttpGet]
+        [Route("api/Alerts")]
+        [ResponseType(typeof(AngularAlert))]
+        public async Task<IHttpActionResult> GetAllerts([FromUri]int UserId)
         {
-            return db.Alerts.Where(a => (a.UserID == UserId) && (a.isRead == false)).OrderByDescending(a => a.MessageDate);
+            List<Alert> Alerts = null;
+            await Task.Run(() =>
+                    Alerts = db.Alerts.Where(a => (a.UserID == UserId) && (a.isRead == false)).OrderByDescending(a => a.MessageDate).ToList()
+                );
+            if (Alerts == null)
+            {
+                return NotFound();
+            }
+            var alerts = new List<AngularAlert>();
+            foreach (var item in Alerts)
+            {
+                alerts.Add(new AngularAlert(item));
+            }
+                return Ok(alerts);
         }
 
-        // GET: api/Allerts/5
+        // GET: api/Alerts/5
         [ResponseType(typeof(Alert))]
-        public async Task<IHttpActionResult> GetAllert(int id)
+        public async Task<IHttpActionResult> GetAlert(int id)
         {
             Alert allert = await db.Alerts.FindAsync(id);
             if (allert == null)
@@ -66,44 +82,46 @@ namespace WebAPI.Controllers
             return Ok(allert);
         }
 
-        // PUT: api/Allerts/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutAllert(Alert alert)
+        // PUT: api/Alerts/5
+        [HttpPut]
+        [Route("api/Alerts")]
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> PutAlert([FromUri]int alertID)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            Alert toUTD = await db.Alerts.FindAsync(alertID);
+            if (toUTD != null)
+            {
+                toUTD.isRead = true;
+            
 
-            /* if (id != allert.ID)
-             {
-                 return BadRequest();
-             }*/
-
-            db.Entry(alert).State = EntityState.Modified;
-
+            db.Entry(toUTD).State = EntityState.Modified;
+            }
             try
             {
                 await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                /*if (!AllertExists(id))
+                if (!AllertExists(alertID))
                 {
                     return NotFound();
                 }
                 else
                 {
                     throw;
-                }*/
+                }
             }
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Allerts
+        // POST: api/Alerts
         [ResponseType(typeof(Alert))]
-        public async Task<IHttpActionResult> PostAllert(Alert alert)
+        public async Task<IHttpActionResult> PostAlert(Alert alert)
         {
             if (!ModelState.IsValid)
             {

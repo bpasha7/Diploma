@@ -2,7 +2,7 @@
     .module('MyApp')
     .service('DeviceService', function ($http, $log) {
         //Получение данных мониторинга для пользователя по id устройства
-        this.GetDeviceSNMPData = function (id, userId) {
+        this.GetMonitoringData = function (id, userId) {
             return $http.get("/api/Device/snmp?id=" + id + "&userId=" + userId)
         .then(getComplete)
         .catch(getFailed);
@@ -12,7 +12,7 @@
             }
 
             function getFailed(e) {
-                $log.error('Failed for GetDeviceSNMPData');
+                $log.error('Failed for GetMonitoringData');
                 return null;
             }
         }
@@ -55,13 +55,14 @@ class MonitoringChart {
 angular.module('MyApp').controller('DeviceController', function ($cookies, $scope, $routeParams, $interval, DeviceService) {
     var self = this;
     self.id = $routeParams.id;
-    self.DeviceSNMP;
+    self.MonitoringData;
     self.Period = 20;
     self.MonitoingCharts = [];
     self.MonitoingProperties = [];
     self.MonitoingTabs;
     self.ProgressLinear = 0;
     self.timeLeft = 0;
+    self.State = false;
     self.isRun = false;
     self.UserId = $cookies.get('userId');
     var stop;
@@ -85,9 +86,10 @@ angular.module('MyApp').controller('DeviceController', function ($cookies, $scop
     };
     self.Refresh = function () {
         if (self.UserId != null)
-            DeviceService.GetDeviceSNMPData(self.id, self.UserId).then(function (result) {
+            DeviceService.GetMonitoringData(self.id, self.UserId).then(function (result) {
                 if (result != null) {
-                    self.DeviceSNMP = result;
+                    self.MonitoringData = result;
+                    //self.State = self.DeviceSNMP.OK;
                     self.ProgressLinear = 0;
                     self.timeLeft = 0;
                     return 1;
@@ -104,13 +106,13 @@ angular.module('MyApp').controller('DeviceController', function ($cookies, $scop
         });
     }
     self.UpdateMonitoringProperies = function () {
-        self.MonitoingProperties = self.DeviceSNMP.monitoringProperties;
+        self.MonitoingProperties = self.MonitoringData.monitoringProperties;
     }
     self.UpdateMonitoringLists = function () {
-        self.MonitoingTabs = self.DeviceSNMP.monitoringList;
+        self.MonitoingTabs = self.MonitoringData.monitoringList;
     }
     self.UpdateMonitoingCharts = function () {
-        var data = self.DeviceSNMP.monitoringResults;
+        var data = self.MonitoringData.monitoringResults;
         var time = moment(Date.now()).format('LT');
         if (self.MonitoingCharts.length != data.length)
             self.CreateChart(data, time);

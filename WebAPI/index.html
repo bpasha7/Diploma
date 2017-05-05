@@ -42,6 +42,14 @@ footer {
     right: 0;
     height:40px;
 }
+.device_off {
+    background-color: red;
+
+}
+.device_on {
+    background-color: green;
+
+}
 </style>
 <!-- Angular Material requires Angular.js Libraries -->
 <script src="/Scripts/angular/angular.js"></script>
@@ -80,6 +88,7 @@ footer {
 <script src="/Scripts/app/app.form.device.js"></script>
 <script src="/Scripts/app/app.login.js"></script>
 <script src="/Scripts/app/app.menu.js"></script>
+<script src="/Scripts/app/app.account.js"></script>
 
 
 
@@ -111,14 +120,14 @@ footer {
                         </md-menu-item>
                         <md-divider></md-divider>
                         <md-menu-item ng-click="UserMenu.goLogin()" ng-if="!UserMenu.isLogined()">
-                            <md-button> <span md-menu-align-target="">Войти</span></md-button>
+                            <md-button> <span md-menu-align-target="">{{'LOGIN_SIGNUP' | translate }}</span></md-button>
                         </md-menu-item>
-                        <md-menu-item ng-if="UserMenu.isLogined()">
-                            <md-button> <span md-menu-align-target="">Настройки</span></md-button>
+                        <md-menu-item ng-if="UserMenu.isLogined()" ng-click="UserMenu.goSettings()">
+                            <md-button> <span md-menu-align-target="">{{'ACCOUNT' | translate }}</span></md-button>
                         </md-menu-item>
                         <md-divider></md-divider>
                         <md-menu-item ng-click="UserMenu.LogOut()" ng-if="UserMenu.isLogined()">
-                            <md-button> <span md-menu-align-target="">Выйти</span></md-button>
+                            <md-button> <span md-menu-align-target="">{{'SIGNOUT' | translate }}</span></md-button>
                         </md-menu-item>
                     </md-menu-content>
                 </md-menu>

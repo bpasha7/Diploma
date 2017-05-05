@@ -63,9 +63,12 @@ namespace WebAPI.Models
 
     public class DeviceMonitor : Device
     {
+
+        
         public List<MonitoringResults> monitoringResults = new List<MonitoringResults>();
         public List<MonitoringResults> monitoringProperties = new List<MonitoringResults>();
         public List<MonitoringList> monitoringList = new List<MonitoringList>();
+        public bool OK = true;
         public string TypeName;
         SimpleSnmp snmp;
         //is null into json?
@@ -97,19 +100,20 @@ namespace WebAPI.Models
 
         public void CheckConditions(int UserId)
         {
-            var allert = new Alert();
-            allert.UserID = UserId;
-            allert.MessageDate = DateTime.Now;
-            allert.isRead = false;
+            var alert = new Alert();
+            alert.UserID = UserId;
+            alert.MessageDate = DateTime.Now;
+            alert.isRead = false;
+            alert.DeviceID = DeviceID;
             foreach (var monitoringResult in monitoringResults)
             {
                 if (monitoringResult.Conditions == null && monitoringResult.ValueType == "numeric")
                     continue;
                 if (hasProblem(monitoringResult.Conditions.Replace("res", monitoringResult.Value)) == 1)
                 {
-                    allert.Message = monitoringResult.Explanation;
-                    allert.Header = string.Format("{0} [{1}]", DeviceName, DeviceIP);
-                    db.Alerts.Add(allert);
+                    alert.Message = monitoringResult.Explanation;
+                    alert.Header = string.Format("{0} [{1}]", DeviceName, DeviceIP);
+                    db.Alerts.Add(alert);
                     /*if(monitoringResult.Notification)
                     {
                         //send to email
@@ -118,7 +122,7 @@ namespace WebAPI.Models
             }
             db.SaveChangesAsync();
         }
-        static private int hasProblem(string con)
+        private int hasProblem(string con)
         {
             int res = -1;
             System.Text.StringBuilder Con = new System.Text.StringBuilder(con);
@@ -135,7 +139,7 @@ namespace WebAPI.Models
             }
             return res;
         }
-        static private int ParseCondition(string con)
+        private int ParseCondition(string con)
         {
             string[] acts = { ">=", "<=", "<", ">", "==", "!=", "&&", "||" };
             string act = "";
@@ -153,7 +157,7 @@ namespace WebAPI.Models
             return CompareParameters(Convert.ToInt32(MyConditionParams[0]), Convert.ToInt32(MyConditionParams[1]), act);
 
         }
-        static private int CompareParameters(int a, int b, string action)
+        private int CompareParameters(int a, int b, string action)
         {
             switch (action)
             {
@@ -190,7 +194,7 @@ namespace WebAPI.Models
             }
         }
 
-        static private int CaclculateBinary(int a, int b, string action)
+        private int CaclculateBinary(int a, int b, string action)
         {
             switch (action)
             {
@@ -260,6 +264,11 @@ namespace WebAPI.Models
             Pdu pdu = new Pdu();
             pdu.VbList.Add(OID);
             var result = snmp.GetNext(SnmpVersion.Ver2, pdu);
+            if(result == null)
+            {
+                OK = false;
+                return "";
+            }
             return result.First().Value.ToString();
         }
         private List<MyList> SNMPWalk(string OID)

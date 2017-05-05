@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebAPI.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace WebAPI.Controllers
 {
@@ -25,10 +27,25 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("api/OIDs/Type")]
-        public IQueryable<OID> GetOIDsByGroup([FromUri]string ForDevices)
+        [ResponseType(typeof(AngularOID))]
+        public async Task<IHttpActionResult> GetOIDsByGroup([FromUri]string ForDevices)
         {
-            var DeviceType = Convert.ToInt32(ForDevices);
-            return db.OIDs.Where(x => x.DeviceType == DeviceType);
+            List<OID> oidList = null;
+            int DeviceType = Convert.ToInt32(ForDevices);
+            await Task.Run(() =>
+              oidList = db.OIDs.Where(x => x.DeviceType == DeviceType).ToList()
+            );
+            if (oidList == null)
+            {
+                return NotFound();
+            }
+                var Types = new List<AngularOID>();
+                foreach (var item in oidList)
+                {
+                    Types.Add(new AngularOID(item));
+                }
+                return Ok(Types);
+            //return db.OIDs.Where(x => x.DeviceType == DeviceType);
         }
 
         // GET: api/OIDs/5
@@ -80,18 +97,24 @@ namespace WebAPI.Controllers
         }
 
         // POST: api/OIDs
-        [ResponseType(typeof(OID))]
-        public async Task<IHttpActionResult> PostOID(OID oID)
+        [ResponseType(typeof(AngularOID))]
+        public async Task<IHttpActionResult> PostOID([FromBody]AngularOID oid)
         {
+            //  oID
+            //var newOID = oID.ToObject<AngularOID>());
+           // var oid = (OID)oID;
+            //AngularOID oi = null;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            db.OIDs.Add(oID);
+            //OID oid = (OID)oID;
+            //AngularOID t = oID.ToObject<AngularOID>();
+            OID newOid = oid.ToOID();
+            db.OIDs.Add(newOid);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = oID.ID }, oID);
+            return CreatedAtRoute("DefaultApi", new { id = newOid.ID }, newOid);
         }
 
         // DELETE: api/OIDs/5

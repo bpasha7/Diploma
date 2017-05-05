@@ -14,11 +14,22 @@ namespace WebAPI.Models
     
     public partial class Device
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Device()
+        {
+            this.MonitoringEvents = new HashSet<MonitoringEvent>();
+        }
+    
         public int DeviceID { get; set; }
         public string DeviceIP { get; set; }
         public string DeviceName { get; set; }
         public int DeviceGroup { get; set; }
         public Nullable<int> DeviceType { get; set; }
         public string DeviceCommunity { get; set; }
+    
+        public virtual Group Group { get; set; }
+        public virtual DeviceType DeviceType1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MonitoringEvent> MonitoringEvents { get; set; }
     }
 }

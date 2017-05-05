@@ -38,30 +38,26 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             return Ok(deviceMonitor);
-            /* ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
-            var oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
-            MonitoringData[] monitoringData = Newtonsoft.Json.JsonConvert.DeserializeObject<MonitoringData[]>(oidsArray);
-            DeviceMonitor deviceMonitor = new DeviceMonitor(viewDevice);
-            deviceMonitor.Run(monitoringData);
-            deviceMonitor.CheckConditions(userId);
-            return deviceMonitor.ToJSON();*/
         }
 
         private DeviceMonitor CreateDeviceMonitor(int id, int userId)
         {
+            ViewDevice viewDevice = null;
+            DeviceMonitor deviceMonitor = null;
             try
             {
-                ViewDevice viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
-                var oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();
+                viewDevice = db.ViewDevices.Where(x => x.DeviceID == id).ToList()[0];
+                deviceMonitor = new DeviceMonitor(viewDevice);
+                var oidsArray = JObject.Parse(viewDevice.OIDS)["OIDs"].ToString();///
                 MonitoringData[] monitoringData = Newtonsoft.Json.JsonConvert.DeserializeObject<MonitoringData[]>(oidsArray);
-                DeviceMonitor deviceMonitor = new DeviceMonitor(viewDevice);
                 deviceMonitor.Run(monitoringData);
                 deviceMonitor.CheckConditions(userId);
                 return deviceMonitor;
             }
             catch(Exception ex)
             {
-                return null;
+                deviceMonitor.OK = false;
+                return deviceMonitor;
             }
         }
 

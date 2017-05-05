@@ -1,0 +1,73 @@
+﻿<div class="md-padding selectdemoBasicUsage" ng-cloak="" layout="column" data-ng-init="Account.GetUserInfo()">
+    <md-card>
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">{{'SETTINGS_FORM_HEADER' | translate }}</span>
+            </md-card-title-text>
+        </md-card-title>
+
+        <md-card-content>
+            <div layout="row" layout-align="space-between center">
+                <span>{{'SETTINGS_FORM_ALERT' | translate }}</span>
+                <md-switch md-invert="" ng-model="Account.UserInfo.Settings.EmailAlert" aria-label="Switch 7">
+                    {{Account.UserInfo.Email}}
+                </md-switch>
+            </div>
+
+            <div layout="row" layout-align="space-between center">
+                <span>{{'SETTINGS_FORM_DEFAULT_INTERVAL' | translate }}</span>
+                <md-input-container style="width: 128px;top: -9px;">
+                    <label>{{'SETTINGS_FORM_SEC' | translate }}</label>
+                    <input type="number" ng-model="Account.UserInfo.Settings.Interval" style="width: 118px;">
+                </md-input-container>
+            </div>
+
+            <div layout="row" layout-align="space-between center">
+                <span>{{'SETTINGS_FORM_MAX' | translate }}</span>
+                <md-input-container style="width: 128px;top: -9px;">
+                    <label>{{'SETTINGS_FORM_WHEN' | translate }}</label>
+                    <input type="number" ng-model="Account.UserInfo.Settings.MaxAlerts" style="width: 118px;">
+                </md-input-container>
+            </div>
+
+            <div layout="row" layout-align="space-between center">
+                <span>{{'SETTINGS_FORM_PASSWORD_MANAGE' | translate }}</span>
+                <md-button class="md-primary md-hue-1">{{'FORM_EDIT' | translate }}</md-button>
+            </div>
+
+            <div layout="row" layout-align="space-between center">
+                <span>{{'ACCOUNT' | translate }}</span>
+                <md-button class="md-primary md-hue-1" ng-click="Account.Save()">{{'FORM_SAVE' | translate }}</md-button>
+                <md-button class="md-accent">{{'FORM_DELETE' | translate }}</md-button>
+            </div>
+
+
+
+        </md-card-content>
+    </md-card>
+
+
+    <md-card>
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">{{'SETTINGS_FORM_GROUPS_MANAGE' | translate }}</span>
+            </md-card-title-text>
+        </md-card-title>
+
+        <md-card-content>
+            <div layout="row">
+
+                <md-input-container>
+                    <label>{{'FORM_GROUP' | translate }}</label>
+                    <md-select ng-model="Account.group" ng-change="Account.NewGroupSelected()" placeholder="{{'FORM_GROUPS' | translate }}" md-on-open="Account.getList()" style="min-width: 200px;">
+                        <md-option ng-repeat="item in Account.MyGroups" ng-value="item.GroupId">{{item.GroupName}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-button class="md-primary md-hue-1">{{'FORM_EDIT' | translate }}</md-button>
+                <md-button class="md-accent">{{'FORM_DELETE' | translate }}</md-button>
+
+            </div>
+        </md-card-content>
+    </md-card>
+
+</div>

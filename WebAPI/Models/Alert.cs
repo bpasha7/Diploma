@@ -20,5 +20,8 @@ namespace WebAPI.Models
         public Nullable<System.DateTime> MessageDate { get; set; }
         public Nullable<bool> isRead { get; set; }
         public string Header { get; set; }
+        public Nullable<int> DeviceID { get; set; }
+    
+        public virtual User User { get; set; }
     }
 }

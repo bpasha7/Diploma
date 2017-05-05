@@ -17,6 +17,11 @@ function router($routeProvider) {
          controller: 'DeviceController',
          controllerAs: 'Device'
      })
+        .when('/settings', {
+            templateUrl: 'public\\views\\settings.html',
+            controller: 'AccountController',
+            controllerAs: 'Account'
+        })
     .otherwise({
         redirectTo: ''
     });
@@ -25,6 +30,85 @@ function router($routeProvider) {
 angular
   .module('MyApp')
   .config(router);
+
+
+angular
+    .module('MyApp')
+    .service('NewParamFormService', function ($http, $cookies, $log) {
+        var functionName = "";
+        this.CreateParam = function (NewParam) {
+            functionName = "CreateParam";
+            return $http({
+                method: "post",
+                url: "api/OIDs",
+                data: { oID: NewParam },
+                dataType: "json"
+            })
+                .then(getComplete)
+                .catch(getFailed);
+        }
+
+        function getComplete(data) {
+            return data.data;
+        }
+
+        function getFailed(e) {
+            $log.error('Failed for NewParamFormService->' + functionName);
+            return null;
+        }
+    });
+
+
+angular.module('MyApp')
+    .controller('NewParamFormController', function (DeviceFormService, NewParamFormService, $timeout) {
+        var self = this;
+        self.ValueTypes = [
+            { id: 0, name: 'string'},
+            { id: 1, name: 'list'},
+            { id: 2, name: 'numeric'}
+        ];
+        //Выбранный тип устройств
+        self.NewParam = {};
+        self.NewParam.DeviceType1 = null;
+        self.NewParam.ID = 0;
+        //Типы устройств из БД
+        self.DeviceTypes = null;
+        //Загрузка типов устройств из БД
+        self.loadDeviceTypes = function () {
+            if (self.DeviceTypes != null)
+                return;
+            return $timeout(function () {
+                DeviceFormService.GetTypes()
+                .then(function (data) {
+                    self.DeviceTypes = data;
+                });
+            }, 650);
+        };
+        self.CreateParam = function () {
+            NewParamFormService.CreateParam(self.NewParam)
+                .then(function (result) {
+                    if (result)
+                        alert('ere');
+                })
+        }
+        self.TypeSelected = function () {
+
+        }
+
+        self.showAlert = function (ev, title, text) {
+            $mdDialog.show(
+              $mdDialog.alert()
+                .parent(angular.element(document.querySelector('#popupContainer')))
+                .clickOutsideToClose(true)
+                .title(title)
+                .textContent(text)
+                .ariaLabel('Alert Dialog')
+                .ok('OK')
+                .targetEvent(ev)
+            )
+        }
+    });
+
 
 angular
     .module('MyApp')
@@ -57,7 +141,7 @@ angular
     });
 
 angular.module('MyApp')
-    .controller('MonitorController', function (MonitorService, $http, $interval) {
+    .controller('MonitorController', function (MonitorService, $interval) {
         var self = this;
 
         self.MyGroups;
@@ -88,19 +172,19 @@ angular.module('MyApp')
         };
         self.Refresh = function () {
             if (self.UserId != null)
-               // DeviceService.GetDeviceSNMPData(self.id, self.UserId).then(function (result) {
-                  //  if (result != null) {
-                        self.DeviceSNMP = result;
-                        self.ProgressLinear = 0;
-                        self.timeLeft = 0;
-                   // }
-                   // else
-                       // return;
-              //  });
+                // DeviceService.GetDeviceSNMPData(self.id, self.UserId).then(function (result) {
+                //  if (result != null) {
+                self.DeviceSNMP = result;
+            self.ProgressLinear = 0;
+            self.timeLeft = 0;
+            // }
+            // else
+            // return;
+            //  });
         }
 
-        $http.get("api/ViewDevices", { responseType: "json" })
-        .then(function (response) { self.Devices = response.data; });
+        /*$http.get("api/ViewDevices", { responseType: "json" })
+        .then(function (response) { self.Devices = response.data; });*/
 
         self.getList = function () {
             MonitorService.GetGroups()
@@ -119,18 +203,3 @@ angular.module('MyApp')
                 });
         }
     });
-
-
-angular.module('MyApp').controller('SwitchDemoCtrl', function ($scope) {
-    $scope.data = {
-        cb1: true,
-        cb4: true,
-        cb5: false
-    };
-
-    $scope.message = 'false';
-
-    $scope.onChange = function (cbState) {
-        $scope.message = cbState;
-    };
-});

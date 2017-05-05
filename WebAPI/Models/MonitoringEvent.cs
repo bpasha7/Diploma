@@ -20,5 +20,7 @@ namespace WebAPI.Models
         public string Conditions { get; set; }
         public bool Notification { get; set; }
         public string Explanation { get; set; }
+    
+        public virtual Device Device { get; set; }
     }
 }

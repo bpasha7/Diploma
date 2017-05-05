@@ -26,20 +26,41 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/user/login")]
-        public string GetMonitoringData([FromUri]string email, [FromUri]string password)
+        [ResponseType(typeof(AngularUser))]
+        public async Task<IHttpActionResult> LogiProcess([FromUri]string email, [FromUri]string password)
         {
-            var users = db.Users.Where(x=> (x.Email == email) && (x.Pass == password)).ToList();
-            if (users.Count == 1)
-                return JsonConvert.SerializeObject(users[0],
-                            Newtonsoft.Json.Formatting.None,
-                            new JsonSerializerSettings
-                            {
-                                NullValueHandling = NullValueHandling.Ignore
-                            });
+            AngularUser user = null;
+            await Task.Run(() =>
+                    user = new AngularUser( db.Users.Where(x => (x.Email == email) && (x.Pass == password)).Single())
+                );
+            if (user == null)
+            {
+                return NotFound();
+            }
             else
-                return null;
+                return Ok(user);
         }
-
+        /// <summary>
+        /// Получение настроек аккаунта
+        /// </summary>
+        /// <param name="UserId">Id пользователя</param>
+        /// <returns>Объект с настройками пользотвателя</returns>
+        [HttpGet]
+        [Route("api/user/info")]
+        [ResponseType(typeof(UserInfo))]
+        public async Task<IHttpActionResult> GetUserInfo([FromUri] int UserId)
+        {
+            UserInfo userInfo = null;
+            await Task.Run(() =>
+                    userInfo = new UserInfo(db.Users.Where(x => x.UserID == UserId).ToList()[0])
+                );
+            if (userInfo == null)
+            {
+                return NotFound();
+            }
+            else
+                return Ok(userInfo);
+        }
 
         // GET: api/Users
         public IQueryable<User> GetUsers()
@@ -61,20 +82,19 @@ namespace WebAPI.Controllers
         }
 
         // PUT: api/Users/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutUser(int id, User user)
+        [ResponseType(typeof(UserSettings))]
+        public async Task<IHttpActionResult> PutUser(UserSettings userSettings)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != user.UserID)
-            {
-                return BadRequest();
-            }
+            User usr = db.Users.Where(u => u.UserID == userSettings.UserID).Single();
 
-            db.Entry(user).State = EntityState.Modified;
+            usr.Settings = Newtonsoft.Json.JsonConvert.SerializeObject(userSettings);
+            
+            db.Entry(usr).State = EntityState.Modified;
 
             try
             {
@@ -82,7 +102,7 @@ namespace WebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!UserExists(usr.UserID))
                 {
                     return NotFound();
                 }

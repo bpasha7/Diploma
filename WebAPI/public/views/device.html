@@ -1,18 +1,20 @@
 ﻿<div data-ng-init="Device.Refresh()">
-        <md-card md-theme="" md-theme-watch style="width:320px; display: inline-block;">
+        <md-card md-theme="" md-theme-watch style="max-width:370px; display: inline-block;">
             <md-card-title>
                 <md-card-title-text>
-                    <span class="md-headline">{{Device.DeviceSNMP.DeviceIP}}</span>
-                    <span class="md-subhead">{{Device.DeviceSNMP.TypeName}}</span>
-                    <md-input-container style="width: 100px;">
+                    <span class="md-headline">{{Device.MonitoringData.DeviceIP}}</span>
+                    <span class="md-subhead" style="font-size: larger;">{{Device.MonitoringData.TypeName}}</span>
+                    <md-input-container style="width: 140px;font-size: larger;">
                         <label>{{'DEVICE_MONITOR_LABEL_DURATION' | translate }}</label>
                         <input type="number"
                                ng-model="Device.Period" style="width: 40px;">
                     </md-input-container>
                 </md-card-title-text>
                 <md-card-title-media>
-                    <div class="md-media-lg card-media" style="background: green">
-                        <img class="imgCard" ng-src="/public/images/pc.png" style="" />
+                    <div class="md-media-lg card-media" ng-class="{device_off: Device.MonitoringData.OK == false, device_on: Device.MonitoringData.OK == true}">
+                        <img ng-if="Device.MonitoringData.DeviceType==1" class="imgCard" ng-src="/public/images/printer.png" style="" />
+                        <img ng-if="Device.MonitoringData.DeviceType==2" class="imgCard" ng-src="/public/images/pc.png" style="" />
+                        <img ng-if="Device.MonitoringData.DeviceType==3" class="imgCard" ng-src="/public/images/router.png" style="" />
                         <md-progress-linear md-mode="determinate" value="{{Device.ProgressLinear}}" style="margin-top: 2px;"></md-progress-linear>
                     </div>
                 </md-card-title-media>
@@ -22,10 +24,10 @@
             <md-card-actions layout="row" layout-align="end center">
                 <md-button ng-if="!Device.isRun" ng-click="Device.startMonitoring()">{{'DEVICE_MONITOR_BUTTON_START' | translate }}</md-button>
                 <md-button ng-if="Device.isRun" ng-click="Device.stopMonitoring()">{{'DEVICE_MONITOR_BUTTON_STOP' | translate }}</md-button>
-                <md-button ng-click="Device.UpdateChart()">{{'DEVICE_MONITOR_BUTTON_EDIT' | translate }}</md-button>
+                <md-button ng-click="Device.UpdateChart()">{{'FORM_EDIT' | translate }}</md-button>
             </md-card-actions>
         </md-card>
-        <md-card md-theme="" md-theme-watch style="display: inline-block;position: absolute ;height: 237px; width: auto;">
+        <md-card md-theme="" md-theme-watch style="display: inline-block;position: absolute ;height: 237px; width: auto">
             <md-card-title>
                 <md-card-title-text>
                     <span class="md-headline">{{'DEVICE_MONITOR_PROPERIES' | translate}}</span>

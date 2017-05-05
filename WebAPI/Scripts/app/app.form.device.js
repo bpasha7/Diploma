@@ -19,25 +19,26 @@
                 });
 
         }
-        //поправить имена функций
+        //Получить Параметры мониторинга по типу устройств
         this.GetOIDs = function (DeviceType) {
             return $http.get("api/OIDs/Type?ForDevices=" + DeviceType)
-        .then(getCustomerComplete)
-        .catch(getCustomerFailed);
+        .then(getComplete)
+        .catch(getFailed);
+        }
+        //Получить типы Устрйоств
+        this.GetTypes = function () {
+            return $http.get("api/DeviceTypes", { responseType: "json" })
+        .then(getComplete)
+        .catch(getFailed);
+        }
 
-            function getCustomerComplete(data, status, headers, config) {
-                return data.data;
-            }
+        function getComplete(data) {
+            return data.data;
+        }
 
-            function getCustomerFailed(e) {
-                var newMessage = 'XHR Failed for getCustomer'
-                if (e.data && e.data.description) {
-                    newMessage = newMessage + '\n' + e.data.description;
-                }
-                e.data.description = newMessage;
-                logger.error(newMessage);
-                return $q.reject(e);
-            }
+        function getFailed(e) {
+            $log.error('Failed for DeviceFormService');
+            return null;
         }
     });
 
@@ -196,8 +197,10 @@ angular.module('MyApp').controller('DeviceFormController', function ($http, $mdD
 
         // Use timeout to simulate a 650ms request.
         return $timeout(function () {
-            $http.get("api/DeviceTypes", { responseType: "json" }).then(function (response) {
-                self.DeviceTypes = response.data;
+            DeviceFormService.GetTypes()
+            //$http.get("api/DeviceTypes", { responseType: "json" }).
+            .then(function (data) {
+                self.DeviceTypes = data;
             });
         }, 650);
     };

@@ -14,10 +14,23 @@ namespace WebAPI.Models
     
     public partial class User
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public User()
+        {
+            this.Alerts = new HashSet<Alert>();
+            this.Groups = new HashSet<Group>();
+        }
+    
         public int UserID { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Pass { get; set; }
-        public bool EmailAllert { get; set; }
+        public bool EmailAlert { get; set; }
+        public string Settings { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Alert> Alerts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Group> Groups { get; set; }
     }
 }

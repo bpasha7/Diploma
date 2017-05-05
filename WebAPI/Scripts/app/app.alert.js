@@ -4,27 +4,31 @@ angular.module('MyApp').controller('DialogController', DialogController);
 angular
     .module('MyApp')
     .service('AlertService', function ($http, $cookies, $log) {
-        var UserId = $cookies.get('userId');
+        var UserId;
         //поправить имена функций
         var functionName;
         //Првоерить оповешения пользователя
         this.AlertsCount = function () {
             functionName = "AlertsCount";
+            UserId = $cookies.get('userId');
             return $http.get("api/Alerts/Count?UserId=" + UserId)
                 .then(getComplete)
                 .catch(getFailed);
         }
         this.GetAlerts = function () {
             functionName = "GetAlerts";
+            UserId = $cookies.get('userId');
             return $http.get("/api/Alerts?UserId=" + UserId)
         .then(getComplete)
         .catch(getFailed);
         }
+        
         this.SetRead = function (msg) {
+            var alertID = msg.ID;
             return $http({
                 method: 'put',
-                url: '/api/Alerts/',// + msg.ID,
-                data: msg
+                url: '/api/Alerts?alertID=' + msg.ID,// + msg.ID,
+               // data: alertID
             }).then(function successCallback(response) {
                 // this callback will be called asynchronously
                 // when the response is available

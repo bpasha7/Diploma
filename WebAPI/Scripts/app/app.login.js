@@ -1,6 +1,6 @@
 ﻿angular
     .module('MyApp')
-    .service('LoginService', function ($http) {
+    .service('LoginService', function ($http, $log) {
         //поправить имена функций
         this.GetUserID = function (email, password) {
             return $http.get("api/user/login?email=" + email + "&password=" + password)
@@ -28,14 +28,14 @@ angular.module('MyApp').controller('LoginController', function ($cookies, $filte
                 if (result != null) {
                     $cookies.put('userId', result.UserID);
                     $cookies.put('UserName', result.UserName);
-                    self.showAlert(ev, $filter('translate')('HEADLINE'), $filter('translate')('LOGIN_SIGNUP_OK'));
                     $location.url('/monitor');
+                    //self.showAlert(ev, $filter('translate')('HEADLINE'), $filter('translate')('LOGIN_SIGNUP_OK'));
                 }
                 else {
                     self.showAlert(ev, $filter('translate')('HEADLINE'), $filter('translate')('LOGIN_SIGNUP_FAIL'));
                     //return false;
                 }
-            });
+            })
     };
     self.showAlert = function (ev, title, text) {
         $mdDialog.show(
@@ -47,7 +47,8 @@ angular.module('MyApp').controller('LoginController', function ($cookies, $filte
             .ariaLabel('Alert Dialog')
             .ok('OK')
             .targetEvent(ev)
-        );
+        )
+
         //return true;
         /* .then(function (result) {
                  if(result)
